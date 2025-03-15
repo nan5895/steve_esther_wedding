@@ -1,11 +1,21 @@
-<!DOCTYPE html>
+// 초기화 함수 실행
+            loadFromHash(); // URL 해시에서 데이터 불러오기 시도
+            initGuestbookSlider(); // 방명록 슬라이더 초기화
+            loadKakaoMap();            // 방명록 슬라이더 네비게이션 버튼
+            document.querySelector('.guestbook-prev-btn').addEventListener('click', () => {
+                goToGuestbookSlide(currentGuestbookSlide - 1);
+            });
+            
+            document.querySelector('.guestbook-next-btn').addEventListener('click', () => {
+                goToGuestbookSlide(currentGuestbookSlide + 1);
+            });<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>우리의 결혼식에 초대합니다</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&family=Nanum+Myeongjo:wght@400;700;800&family=Sunflower:wght@300;500;700&display=swap');
         
         /* 메뉴 네비게이션 스타일 */
         .main-navigation {
@@ -117,7 +127,7 @@
         }
         
         body {
-            font-family: 'Noto Sans KR', sans-serif;
+            font-family: 'Nanum Myeongjo', 'Noto Sans KR', serif;
             line-height: 1.6;
             color: #333;
             background-color: #f9f9f9;
@@ -131,8 +141,7 @@
         }
         
         .header {
-            height: 100vh;
-            background-color: #f7e6e3;
+            height: 120vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -140,6 +149,7 @@
             text-align: center;
             padding: 20px;
             position: relative;
+            overflow: hidden;
         }
         
         .header-background {
@@ -148,48 +158,58 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(rgba(247, 230, 227, 0.5), rgba(247, 230, 227, 0.8));
+            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)), url('/api/placeholder/1920/1080');
+            background-size: cover;
+            background-position: center;
             z-index: 1;
+            filter: brightness(0.8);
         }
         
         .header-content {
             position: relative;
             z-index: 2;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
         }
         
         .title {
-            font-family: 'Noto Serif KR', serif;
-            font-weight: 600;
-            font-size: 2rem;
+            font-family: 'Nanum Myeongjo', serif;
+            font-weight: 800;
+            font-size: 2.5rem;
             margin-bottom: 20px;
-            color: #3a3a3a;
+            color: white;
         }
         
         .sub-title {
-            font-family: 'Noto Sans KR', sans-serif;
+            font-family: 'Sunflower', sans-serif;
             font-weight: 300;
-            font-size: 1.1rem;
+            font-size: 1.3rem;
             margin-bottom: 40px;
-            color: #666;
+            color: rgba(255, 255, 255, 0.9);
         }
         
         .date {
-            font-family: 'Noto Serif KR', serif;
-            font-size: 1.4rem;
+            font-family: 'Nanum Myeongjo', serif;
+            font-weight: 700;
+            font-size: 1.8rem;
             margin-bottom: 10px;
-            color: #3a3a3a;
+            color: white;
         }
         
         .time {
-            font-size: 1.1rem;
+            font-family: 'Sunflower', sans-serif;
+            font-weight: 300;
+            font-size: 1.3rem;
             margin-bottom: 20px;
-            color: #666;
+            color: rgba(255, 255, 255, 0.9);
         }
         
         .location {
-            font-size: 1.1rem;
+            font-family: 'Sunflower', sans-serif;
+            font-weight: 300;
+            font-size: 1.3rem;
             margin-bottom: 40px;
-            color: #666;
+            color: rgba(255, 255, 255, 0.9);
         }
         
         .scroll-hint {
@@ -198,8 +218,70 @@
             left: 50%;
             transform: translateX(-50%);
             animation: bounce 2s infinite;
-            color: #888;
+            color: white;
             font-size: 0.9rem;
+            z-index: 2;
+        }
+        
+        /* 배경 음악 컨트롤 */
+        .audio-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+        }
+        
+        .audio-control:hover {
+            transform: scale(1.1);
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .audio-btn {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: #e2b0c1;
+            font-size: 12px;
+            padding: 0;
+        }
+        
+        .audio-icon {
+            width: 16px;
+            height: 16px;
+            fill: #e2b0c1;
+        }
+        
+        .audio-notification {
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 10px 20px;
+            border-radius: 30px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+            font-size: 0.9rem;
+            color: #333;
+            border: 1px solid #e2b0c1;
         }
         
         @keyframes bounce {
@@ -819,7 +901,18 @@
                 <p class="location">그랜드 호텔 2층 그랜드볼룸</p>
             </div>
             <div class="scroll-hint">아래로 스크롤</div>
+            <audio id="background-music" loop autoplay>
+                <source src="https://cdnjs.cloudflare.com/ajax/libs/ion-sound/3.0.7/sounds/bell_ring.mp3" type="audio/mpeg">
+            </audio>
         </header>
+        
+        <div class="audio-control" id="audio-control">
+            <button class="audio-btn" id="audio-toggle">
+                <svg class="audio-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.84 14,18.7V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.76 16.5,12M3,9V15H7L12,20V4L7,9H3Z" />
+                </svg>
+            </button>
+        </div>
         
         <section class="intro" id="intro">
             <h2 class="section-title">초대합니다</h2>
@@ -1248,7 +1341,7 @@
                     if (window.location.hash && window.location.hash.length > 1) {
                         const hashData = window.location.hash.substring(1);
                         const decodedData = decodeURIComponent(hashData);
-                        const parsedData = JSON.parse(atob(decodedData));
+                        const parsedData = JSON.parse(decodedData);
                         
                         if (Array.isArray(parsedData) && parsedData.length > 0) {
                             guestbookEntries = parsedData;
@@ -1261,27 +1354,32 @@
                 return false;
             }
             
-            // URL 해시에 데이터 저장
+            // URL 해시에 데이터 저장 (한글 문제 해결)
             function saveToHash() {
                 try {
                     const dataString = JSON.stringify(guestbookEntries);
-                    const encodedData = btoa(dataString);
+                    // btoa 대신 encodeURIComponent 사용
+                    const encodedData = encodeURIComponent(dataString);
                     window.location.hash = encodedData;
                     
                     const statusEl = document.getElementById('data-save-status');
-                    statusEl.textContent = '모든 메시지가 안전하게 저장되었습니다';
-                    statusEl.classList.add('saved');
-                    
-                    setTimeout(() => {
-                        statusEl.classList.remove('saved');
-                    }, 3000);
+                    if (statusEl) {
+                        statusEl.textContent = '모든 메시지가 안전하게 저장되었습니다';
+                        statusEl.classList.add('saved');
+                        
+                        setTimeout(() => {
+                            statusEl.classList.remove('saved');
+                        }, 3000);
+                    }
                     
                     return true;
                 } catch (e) {
                     console.error('Error saving data to hash:', e);
                     
                     const statusEl = document.getElementById('data-save-status');
-                    statusEl.textContent = '데이터 저장에 문제가 발생했습니다. 너무 많은 메시지가 있을 수 있습니다.';
+                    if (statusEl) {
+                        statusEl.textContent = '데이터 저장에 문제가 발생했습니다.';
+                    }
                     
                     return false;
                 }
@@ -1376,6 +1474,31 @@
                 goToGuestbookSlide(0);
             }
             
+            // 방명록 슬라이드 이동 함수
+            function goToGuestbookSlide(slideIndex) {
+                const sliderContainer = document.getElementById('guestbook-slider');
+                const totalSlides = document.querySelectorAll('.guestbook-slide').length;
+                
+                if (slideIndex < 0) {
+                    slideIndex = totalSlides - 1;
+                } else if (slideIndex >= totalSlides) {
+                    slideIndex = 0;
+                }
+                
+                currentGuestbookSlide = slideIndex;
+                const translateX = -100 * currentGuestbookSlide;
+                sliderContainer.style.transform = `translateX(${translateX}%)`;
+                
+                // 도트 활성화 업데이트
+                document.querySelectorAll('.guestbook-slider-dot').forEach((dot, index) => {
+                    if (index === currentGuestbookSlide) {
+                        dot.classList.add('active');
+                    } else {
+                        dot.classList.remove('active');
+                    }
+                });
+            }
+            
             // 방명록 추가 이벤트
             guestbookForm.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -1399,18 +1522,21 @@
                     date: dateString
                 };
                 
-                // 메모리에 방명록 추가
+                // 방명록 데이터에 추가
                 guestbookEntries.push(newEntry);
                 
-                // 방명록 다시 불러오기
-                loadGuestbook();
+                // URL 해시에 저장
+                saveToHash();
+                
+                // 방명록 슬라이더 다시 로드
+                initGuestbookSlider();
+                
+                // 첫 번째 슬라이드(최신 메시지)로 이동
+                goToGuestbookSlide(0);
                 
                 // 입력 폼 초기화
                 nameInput.value = '';
                 messageInput.value = '';
-                
-                // 성공 메시지 표시
-                alert('방명록이 등록되었습니다.');
             });
             
             // 지도 초기화
@@ -1491,9 +1617,65 @@
                 });
             });
             
-            // 초기화 함수 실행
-            loadGuestbook();
-            loadKakaoMap();
+            // 방명록 호환성 함수 (오류 수정)
+            function loadGuestbook() {
+                // 이전 함수를 새 함수로 리다이렉트
+                initGuestbookSlider();
+            }
+            
+            // 배경 음악 컨트롤
+            const audioElement = document.getElementById('background-music');
+            const audioToggle = document.getElementById('audio-toggle');
+            const audioIcon = document.querySelector('.audio-icon');
+            let isPlaying = true; // 기본적으로 재생 중으로 설정
+            
+            // 음악 초기 설정
+            audioElement.volume = 0.5; // 볼륨 조절
+            
+            // SVG 아이콘 변경 함수
+            function updateAudioIcon(playing) {
+                if (playing) {
+                    audioIcon.innerHTML = '<path d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.84 14,18.7V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.76 16.5,12M3,9V15H7L12,20V4L7,9H3Z" />';
+                } else {
+                    audioIcon.innerHTML = '<path d="M12,4L9.91,6.09L12,8.18M4.27,3L3,4.27L7.73,9H3V15H7L12,20V13.27L16.25,17.53C15.58,18.04 14.83,18.46 14,18.7V20.77C15.38,20.45 16.63,19.82 17.68,18.96L19.73,21L21,19.73L12,10.73M19,12C19,12.94 18.8,13.82 18.46,14.64L19.97,16.15C20.62,14.91 21,13.5 21,12C21,7.72 18,4.14 14,3.23V5.29C16.89,6.15 19,8.83 19,12M16.5,12C16.5,10.23 15.5,8.71 14,7.97V10.18L16.45,12.63C16.5,12.43 16.5,12.21 16.5,12Z" />';
+                }
+            }
+            
+            // 자동 재생 시도
+            window.addEventListener('load', function() {
+                try {
+                    audioElement.play().then(() => {
+                        isPlaying = true;
+                        updateAudioIcon(true);
+                    }).catch(e => {
+                        isPlaying = false;
+                        updateAudioIcon(false);
+                        console.log('자동 재생이 차단되었습니다. 버튼을 눌러 음악을 켜주세요.');
+                    });
+                } catch (e) {
+                    console.log('자동 재생 시도 실패');
+                    updateAudioIcon(false);
+                }
+            });
+            
+            // 음악 재생/일시정지 토글
+            audioToggle.addEventListener('click', function() {
+                if (isPlaying) {
+                    audioElement.pause();
+                    updateAudioIcon(false);
+                    isPlaying = false;
+                } else {
+                    // 사용자 상호작용으로 재생 시도
+                    audioElement.play().then(() => {
+                        updateAudioIcon(true);
+                        isPlaying = true;
+                    }).catch(error => {
+                        console.error('음악 재생 실패:', error);
+                        updateAudioIcon(false);
+                        isPlaying = false;
+                    });
+                }
+            });
         });
     </script>
 </body>
