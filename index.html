@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>우리의 결혼식에 초대합니다</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+KR:wght@400;600&display=swap');
+        
+        /* 메뉴 네비게이션 스타일 */
+        .main-navigation {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-family: 'Noto Serif KR', serif;
+            font-weight: 600;
+            font-size: 1.5rem;
+            color: #e2b0c1;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-menu li {
+            margin-left: 20px;
+        }
+        
+        .nav-menu a {
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-menu a:hover {
+            color: #e2b0c1;
+        }
+        
+        .hamburger {
+            display: none;
+            cursor: pointer;
+        }
+        
+        .bar {
+            display: block;
+            width: 25px;
+            height: 3px;
+            margin: 5px auto;
+            transition: all 0.3s ease;
+            background-color: #555;
+        }
+        
+        @media only screen and (max-width: 768px) {
+            .nav-menu {
+                position: fixed;
+                left: -100%;
+                top: 50px;
+                flex-direction: column;
+                background-color: rgba(255, 255, 255, 0.95);
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                padding: 10px 0;
+            }
+            
+            .nav-menu.active {
+                left: 0;
+            }
+            
+            .nav-menu li {
+                margin: 10px 0;
+            }
+            
+            .hamburger {
+                display: block;
+            }
+            
+            .hamburger.active .bar:nth-child(2) {
+                opacity: 0;
+            }
+            
+            .hamburger.active .bar:nth-child(1) {
+                transform: translateY(8px) rotate(45deg);
+            }
+            
+            .hamburger.active .bar:nth-child(3) {
+                transform: translateY(-8px) rotate(-45deg);
+            }
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+            scroll-behavior: smooth;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            overflow-x: hidden;
+        }
+        
+        .header {
+            height: 100vh;
+            background-color: #f7e6e3;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .header-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(rgba(247, 230, 227, 0.5), rgba(247, 230, 227, 0.8));
+            z-index: 1;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .title {
+            font-family: 'Noto Serif KR', serif;
+            font-weight: 600;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #3a3a3a;
+        }
+        
+        .sub-title {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 300;
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            color: #666;
+        }
+        
+        .date {
+            font-family: 'Noto Serif KR', serif;
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: #3a3a3a;
+        }
+        
+        .time {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: #666;
+        }
+        
+        .location {
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            color: #666;
+        }
+        
+        .scroll-hint {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            color: #888;
+            font-size: 0.9rem;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0) translateX(-50%);
+            }
+            40% {
+                transform: translateY(-20px) translateX(-50%);
+            }
+            60% {
+                transform: translateY(-10px) translateX(-50%);
+            }
+        }
+        
+        section {
+            padding: 60px 20px;
+            text-align: center;
+        }
+        
+        .section-title {
+            font-family: 'Noto Serif KR', serif;
+            font-size: 1.6rem;
+            margin-bottom: 30px;
+            color: #3a3a3a;
+        }
+        
+        .intro {
+            background-color: white;
+        }
+        
+        .intro-text {
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.8;
+            color: #555;
+            font-size: 1rem;
+            margin-bottom: 40px;
+        }
+        
+        .couple {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            margin-top: 40px;
+        }
+        
+        .person {
+            text-align: center;
+        }
+        
+        .profile {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+        
+        .name {
+            font-weight: 500;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+        
+        .relation {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        
+        .heart {
+            font-size: 2rem;
+            color: #e2b0c1;
+            margin: 20px 0;
+        }
+        
+        .gallery {
+            background-color: #e8f4f3;
+        }
+        
+        /* 갤러리 슬라이드 스타일 */
+        .gallery-container {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slide-container {
+            display: flex;
+            transition: transform 0.5s ease;
+            width: 100%;
+        }
+        
+        .slide {
+            min-width: 100%;
+            position: relative;
+        }
+        
+        .gallery-item {
+            width: 100%;
+            aspect-ratio: 4/3;
+            object-fit: cover;
+        }
+        
+        .gallery-nav {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .slide-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #e2b0c1;
+            cursor: pointer;
+            padding: 0 15px;
+        }
+        
+        .slide-indicator {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        
+        .dot {
+            height: 8px;
+            width: 8px;
+            margin: 0 5px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+        
+        .dot.active {
+            background-color: #e2b0c1;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+        }
+        
+        .modal-image {
+            width: 100%;
+            height: auto;
+            max-height: 90vh;
+            object-fit: contain;
+        }
+        
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
+        
+        .location-section {
+            background-color: white;
+        }
+        
+        .map-container {
+            height: 300px;
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+        
+        .address {
+            margin-bottom: 20px;
+            color: #555;
+        }
+        
+        .direction-btn {
+            display: inline-block;
+            background-color: #e2b0c1;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            margin: 5px;
+        }
+        
+        .direction-btn:hover {
+            background-color: #d495a8;
+        }
+        
+        .contact {
+            background-color: #f0e6f2;
+        }
+        
+        .contact-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .contact-name {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .contact-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .contact-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e2b0c1;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .calendar {
+            background-color: white;
+        }
+        
+        .calendar-add {
+            display: inline-block;
+            background-color: #e2b0c1;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+        
+        .calendar-add:hover {
+            background-color: #d495a8;
+        }
+        
+        .footer {
+            background-color: #333;
+            color: #ccc;
+            padding: 20px;
+            text-align: center;
+            font-size: 0.8rem;
+        }
+        
+        /* 계좌번호 섹션 스타일 */
+        .account-section {
+            background-color: #f7f7f7;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        
+        .account-intro {
+            max-width: 600px;
+            margin: 0 auto 30px;
+            line-height: 1.8;
+            color: #555;
+            font-size: 1rem;
+        }
+        
+        .account-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .account-tab {
+            padding: 10px 20px;
+            margin: 0 5px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .account-tab.active {
+            color: #e2b0c1;
+            border-bottom: 2px solid #e2b0c1;
+        }
+        
+        .account-tab:hover {
+            color: #e2b0c1;
+        }
+        
+        .account-panels {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .account-panel {
+            display: none;
+        }
+        
+        .account-panel.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .account-item {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            text-align: left;
+        }
+        
+        .account-name {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .account-name-text {
+            font-weight: 600;
+            color: #444;
+        }
+        
+        .account-relation {
+            font-size: 0.85rem;
+            color: #888;
+        }
+        
+        .account-number-wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            margin: 10px 0;
+        }
+        
+        .account-number {
+            color: #333;
+        }
+        
+        .copy-btn {
+            background-color: #e2b0c1;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        
+        .account-bank {
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        @media (min-width: 768px) {
+            .title {
+                font-size: 2.5rem;
+            }
+            
+            .couple {
+                flex-direction: row;
+                justify-content: center;
+                gap: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="main-navigation">
+            <div class="nav-container">
+                <div class="logo">H & M</div>
+                <ul class="nav-menu">
+                    <li><a href="#intro">소개</a></li>
+                    <li><a href="#gallery">갤러리</a></li>
+                    <li><a href="#calendar">날짜</a></li>
+                    <li><a href="#location">오시는 길</a></li>
+                    <li><a href="#account">마음 전하기</a></li>
+                    <li><a href="#contact">연락하기</a></li>
+                </ul>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+        
+        <header class="header">
+            <div class="header-background"></div>
+            <div class="header-content">
+                <h1 class="title">홍길동 & 김미나</h1>
+                <p class="sub-title">우리의 결혼식에 초대합니다</p>
+                <p class="date">2025년 4월 25일</p>
+                <p class="time">토요일 오후 1시</p>
+                <p class="location">그랜드 호텔 2층 그랜드볼룸</p>
+            </div>
+            <div class="scroll-hint">아래로 스크롤</div>
+        </header>
+        
+        <section class="intro" id="intro">
+            <h2 class="section-title">초대합니다</h2>
+            <p class="intro-text">
+                서로 다른 길을 걸어온 저희 두 사람이<br>
+                이제 같은 길을 함께 걸어가려 합니다.<br>
+                새로운 시작의 자리에 함께해 주시면<br>
+                더없는 기쁨으로 간직하겠습니다.
+            </p>
+            
+            <div class="couple">
+                <div class="person">
+                    <img src="/api/placeholder/300/300" alt="신랑" class="profile">
+                    <h3 class="name">홍길동</h3>
+                    <p class="relation">홍판서 · 최여사의 장남</p>
+                    <div class="contact-buttons">
+                        <a href="tel:010-1234-5678" class="contact-btn">📞</a>
+                        <a href="sms:010-1234-5678" class="contact-btn">💬</a>
+                    </div>
+                </div>
+                
+                <div class="heart">❤️</div>
+                
+                <div class="person">
+                    <img src="/api/placeholder/300/300" alt="신부" class="profile">
+                    <h3 class="name">김미나</h3>
+                    <p class="relation">김사장 · 박여사의 차녀</p>
+                    <div class="contact-buttons">
+                        <a href="tel:010-8765-4321" class="contact-btn">📞</a>
+                        <a href="sms:010-8765-4321" class="contact-btn">💬</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="gallery" id="gallery">
+            <h2 class="section-title">갤러리</h2>
+            <div class="gallery-container">
+                <div class="slide-container" id="slide-container">
+                    <div class="slide">
+                        <img src="/api/placeholder/600/450" alt="웨딩 사진 1" class="gallery-item">
+                    </div>
+                    <div class="slide">
+                        <img src="/api/placeholder/600/450" alt="웨딩 사진 2" class="gallery-item">
+                    </div>
+                    <div class="slide">
+                        <img src="/api/placeholder/600/450" alt="웨딩 사진 3" class="gallery-item">
+                    </div>
+                    <div class="slide">
+                        <img src="/api/placeholder/600/450" alt="웨딩 사진 4" class="gallery-item">
+                    </div>
+                    <div class="slide">
+                        <img src="/api/placeholder/600/450" alt="웨딩 사진 5" class="gallery-item">
+                    </div>
+                    <div class="slide">
+                        <img src="/api/placeholder/600/450" alt="웨딩 사진 6" class="gallery-item">
+                    </div>
+                </div>
+                <div class="gallery-nav">
+                    <button class="slide-btn prev-btn">❮</button>
+                    <button class="slide-btn next-btn">❯</button>
+                </div>
+                <div class="slide-indicator" id="slide-indicator">
+                    <!-- 도트 인디케이터는 JS로 생성 -->
+                </div>
+            </div>
+        </section>
+        
+        <section class="calendar" id="calendar">
+            <h2 class="section-title">날짜</h2>
+            <p class="date">2025년 4월 25일</p>
+            <p class="time">토요일 오후 1시</p>
+            <a href="#" class="calendar-add" id="add-to-calendar">캘린더에 추가하기</a>
+        </section>
+        
+        <section class="location-section" id="location">
+            <h2 class="section-title">오시는 길</h2>
+            <div class="map-container" id="map">
+                <!-- 지도가 들어갈 자리 -->
+            </div>
+            <p class="address">
+                서울특별시 중구 남대문로 120<br>
+                그랜드 호텔 2층 그랜드볼룸<br>
+                02-1234-5678
+            </p>
+            <div>
+                <a href="#" class="direction-btn" id="kakao-navi">카카오내비</a>
+                <a href="#" class="direction-btn" id="naver-map">네이버지도</a>
+                <a href="#" class="direction-btn" id="google-map">구글지도</a>
+            </div>
+        </section>
+        
+        <section class="account-section" id="account">
+            <h2 class="section-title">마음 전하실 곳</h2>
+            <p class="account-intro">
+                멀리서도 축하의 마음을 전하고 싶으신 분들을 위해 계좌번호를 안내드립니다. 
+                소중한 축하를 보내주셔서 감사드리며, 따뜻한 마음에 깊이 감사드립니다.
+            </p>
+            
+            <div class="account-tabs">
+                <div class="account-tab active" data-tab="groom">신랑측</div>
+                <div class="account-tab" data-tab="bride">신부측</div>
+            </div>
+            
+            <div class="account-panels">
+                <div class="account-panel active" id="groom-panel">
+                    <div class="account-item">
+                        <div class="account-name">
+                            <span class="account-name-text">홍길동</span>
+                            <span class="account-relation">신랑</span>
+                        </div>
+                        <div class="account-number-wrap">
+                            <span class="account-number">123-456-789012</span>
+                            <button class="copy-btn" data-copy="123-456-789012">복사</button>
+                        </div>
+                        <div class="account-bank">OO은행</div>
+                    </div>
+                    
+                    <div class="account-item">
+                        <div class="account-name">
+                            <span class="account-name-text">홍판서</span>
+                            <span class="account-relation">신랑 아버지</span>
+                        </div>
+                        <div class="account-number-wrap">
+                            <span class="account-number">111-222-333444</span>
+                            <button class="copy-btn" data-copy="111-222-333444">복사</button>
+                        </div>
+                        <div class="account-bank">AA은행</div>
+                    </div>
+                    
+                    <div class="account-item">
+                        <div class="account-name">
+                            <span class="account-name-text">최여사</span>
+                            <span class="account-relation">신랑 어머니</span>
+                        </div>
+                        <div class="account-number-wrap">
+                            <span class="account-number">222-333-444555</span>
+                            <button class="copy-btn" data-copy="222-333-444555">복사</button>
+                        </div>
+                        <div class="account-bank">BB은행</div>
+                    </div>
+                </div>
+                
+                <div class="account-panel" id="bride-panel">
+                    <div class="account-item">
+                        <div class="account-name">
+                            <span class="account-name-text">김미나</span>
+                            <span class="account-relation">신부</span>
+                        </div>
+                        <div class="account-number-wrap">
+                            <span class="account-number">987-654-321098</span>
+                            <button class="copy-btn" data-copy="987-654-321098">복사</button>
+                        </div>
+                        <div class="account-bank">XX은행</div>
+                    </div>
+                    
+                    <div class="account-item">
+                        <div class="account-name">
+                            <span class="account-name-text">김사장</span>
+                            <span class="account-relation">신부 아버지</span>
+                        </div>
+                        <div class="account-number-wrap">
+                            <span class="account-number">333-444-555666</span>
+                            <button class="copy-btn" data-copy="333-444-555666">복사</button>
+                        </div>
+                        <div class="account-bank">CC은행</div>
+                    </div>
+                    
+                    <div class="account-item">
+                        <div class="account-name">
+                            <span class="account-name-text">박여사</span>
+                            <span class="account-relation">신부 어머니</span>
+                        </div>
+                        <div class="account-number-wrap">
+                            <span class="account-number">444-555-666777</span>
+                            <button class="copy-btn" data-copy="444-555-666777">복사</button>
+                        </div>
+                        <div class="account-bank">DD은행</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="contact" id="contact">
+            <h2 class="section-title">혼주에게 연락하기</h2>
+            
+            <div class="contact-card">
+                <h3>신랑측 혼주</h3>
+                <p class="contact-name">홍판서 아버지</p>
+                <div class="contact-buttons">
+                    <a href="tel:010-1111-2222" class="contact-btn">📞</a>
+                </div>
+                
+                <p class="contact-name">최여사 어머니</p>
+                <div class="contact-buttons">
+                    <a href="tel:010-3333-4444" class="contact-btn">📞</a>
+                </div>
+            </div>
+            
+            <div class="contact-card">
+                <h3>신부측 혼주</h3>
+                <p class="contact-name">김사장 아버지</p>
+                <div class="contact-buttons">
+                    <a href="tel:010-5555-6666" class="contact-btn">📞</a>
+                </div>
+                
+                <p class="contact-name">박여사 어머니</p>
+                <div class="contact-buttons">
+                    <a href="tel:010-7777-8888" class="contact-btn">📞</a>
+                </div>
+            </div>
+        </section>
+        
+        <footer class="footer">
+            <p>© 2025 홍길동 & 김미나의 결혼식</p>
+        </footer>
+    </div>
+    
+    <script>
+        // 모든 기능을 DOMContentLoaded 이벤트에 넣기
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                // 네비게이션 메뉴 토글
+                const hamburger = document.querySelector('.hamburger');
+                const navMenu = document.querySelector('.nav-menu');
+                
+                if (hamburger && navMenu) {
+                    hamburger.addEventListener('click', () => {
+                        hamburger.classList.toggle('active');
+                        navMenu.classList.toggle('active');
+                    });
+                    
+                    // 메뉴 아이템 클릭 시 메뉴 닫기
+                    document.querySelectorAll('.nav-menu a').forEach(link => {
+                        link.addEventListener('click', () => {
+                            hamburger.classList.remove('active');
+                            navMenu.classList.remove('active');
+                        });
+                    });
+                }
+                
+                // 스크롤 시 네비게이션 배경 변경
+                window.addEventListener('scroll', () => {
+                    const nav = document.querySelector('.main-navigation');
+                    if (nav) {
+                        if (window.scrollY > 50) {
+                            nav.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
