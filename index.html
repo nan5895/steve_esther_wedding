@@ -109,28 +109,7 @@
             font-weight: 400;
         }
         
-        .play-button {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(145deg, #E56E7D, #ff8a98);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 8px rgba(229, 110, 125, 0.3);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-        }
-        
-        .play-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 12px rgba(229, 110, 125, 0.5);
-        }
+        /* 상단 재생 버튼 제거 */
         
         .main-image {
             width: 100%;
@@ -278,6 +257,13 @@
             position: relative;
             border-radius: 2px;
             overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            width: 0;
+            background-color: var(--accent-color);
+            transition: width 0.3s;
         }
         
         .now-playing-container {
@@ -925,15 +911,6 @@
         <div class="screen">
             <section class="header" id="home">
                 <h1 class="header-title">Love player</h1>
-                <div class="play-button" id="music-toggle">
-                <svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg" id="header-play-icon">
-                    <path d="M13.5 7.13398C14.1667 7.51888 14.1667 8.48112 13.5 8.86603L2.25 15.3301C1.58333 15.715 0.75 15.2339 0.75 14.4641L0.75 1.5359C0.75 0.766098 1.58333 0.285006 2.25 0.669873L13.5 7.13398Z" fill="white"/>
-                </svg>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" id="header-pause-icon" style="display: none;">
-                    <rect x="6" y="4" width="4" height="16" rx="1" fill="white"/>
-                    <rect x="14" y="4" width="4" height="16" rx="1" fill="white"/>
-                </svg>
-            </div>
                 <div class="main-image">
                     <img src="/api/placeholder/600/600" alt="강승현 & 김주은">
                 </div>
@@ -1254,7 +1231,7 @@
             <a href="#" class="share-button">TALK</a>
             <a href="#" class="share-button" aria-label="링크 복사하기"><i class="fas fa-link"></i></a>
         </div>
-        <div class="credit">BarunsonCard</div>
+        <div class="credit">Steve & Esther Wedding</div>
     </div>
     
     <!-- 계좌번호 모달 -->
@@ -1292,59 +1269,161 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // 배경 음악 설정
-            const audioElement = document.getElementById('background-music');
-            const musicToggle = document.getElementById('music-toggle');
-            const pausePlayButton = document.getElementById('play-pause');
+            // 트랙 정보 설정
+            const tracks = [
+                {
+                    element: document.getElementById('music-track-1'),
+                    title: "Everlasting Love - PianoCast"
+                },
+                {
+                    element: document.getElementById('music-track-2'),
+                    title: "Acoustic Motivation"
+                },
+                {
+                    element: document.getElementById('music-track-3'),
+                    title: "A Gentle Breeze - Relaxing Piano"
+                }
+            ];
+            
+            // 현재 트랙 인덱스
+            let currentTrackIndex = 0;
             let isPlaying = false;
             
-            // 음악 볼륨 설정
-            audioElement.volume = 0.4;
+            // UI 요소 선택
+            const playPauseButton = document.getElementById('play-pause');
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
+            const prevButton = document.getElementById('prev-track');
+            const nextButton = document.getElementById('next-track');
+            const rewindButton = document.getElementById('rewind');
+            const forwardButton = document.getElementById('forward');
+            const trackTitleElement = document.getElementById('track-title');
+            const trackInfoElement = document.querySelector('.track-info');
+            const progressFill = document.querySelector('.progress-fill');
             
-            // 음악 재생/일시정지 토글
-            function toggleMusic() {
+            // 현재 트랙 가져오기
+            function getCurrentTrack() {
+                return tracks[currentTrackIndex];
+            }
+            
+            // 트랙 타이틀 업데이트
+            function updateTrackTitle() {
+                trackTitleElement.textContent = getCurrentTrack().title;
+                trackInfoElement.classList.add('track-changed');
+                setTimeout(() => {
+                    trackInfoElement.classList.remove('track-changed');
+                }, 500);
+            }
+            
+            // 트랙 로드 및 재생
+            function loadAndPlayTrack(index) {
+                // 모든 트랙 일시정지
+                tracks.forEach(track => {
+                    track.element.pause();
+                    track.element.currentTime = 0;
+                });
+                
+                currentTrackIndex = index;
+                const currentTrack = getCurrentTrack().element;
+                
+                // 트랙 정보 업데이트
+                updateTrackTitle();
+                
+                // 트랙 재생
+                const playPromise = currentTrack.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        isPlaying = true;
+                        updatePlayPauseButton();
+                    }).catch(error => {
+                        console.error('음악 재생 실패:', error);
+                        isPlaying = false;
+                        updatePlayPauseButton();
+                    });
+                }
+            }
+            
+            // 재생/일시정지 버튼 업데이트
+            function updatePlayPauseButton() {
                 if (isPlaying) {
-                    audioElement.pause();
-                    musicToggle.innerHTML = '<svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.5 7.13398C14.1667 7.51888 14.1667 8.48112 13.5 8.86603L2.25 15.3301C1.58333 15.715 0.75 15.2339 0.75 14.4641L0.75 1.5359C0.75 0.766098 1.58333 0.285006 2.25 0.669873L13.5 7.13398Z" fill="white"/></svg>';
-                    pausePlayButton.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 5.14v13.72a1 1 0 0 0 1.5.86l11-6.86a1 1 0 0 0 0-1.72l-11-6.86a1 1 0 0 0-1.5.86z" fill="currentColor"/></svg>';
+                    playIcon.style.display = 'none';
+                    pauseIcon.style.display = 'block';
                 } else {
-                    const playPromise = audioElement.play();
+                    playIcon.style.display = 'block';
+                    pauseIcon.style.display = 'none';
+                }
+            }
+            
+            // 재생/일시정지 토글
+            function togglePlayPause() {
+                const currentTrack = getCurrentTrack().element;
+                
+                if (isPlaying) {
+                    currentTrack.pause();
+                } else {
+                    const playPromise = currentTrack.play();
                     
                     if (playPromise !== undefined) {
-                        playPromise.then(() => {
-                            musicToggle.innerHTML = '<i class="fas fa-pause"></i>';
-                            pausePlayButton.innerHTML = '<i class="fas fa-pause"></i>';
-                        }).catch(error => {
+                        playPromise.catch(error => {
                             console.error('음악 재생 실패:', error);
                         });
                     }
                 }
+                
                 isPlaying = !isPlaying;
+                updatePlayPauseButton();
             }
             
-            musicToggle.addEventListener('click', toggleMusic);
-            pausePlayButton.addEventListener('click', toggleMusic);
+            // 이전 트랙으로 이동
+            function playPreviousTrack() {
+                let newIndex = currentTrackIndex - 1;
+                if (newIndex < 0) newIndex = tracks.length - 1;
+                loadAndPlayTrack(newIndex);
+            }
             
-            // 플레이어 컨트롤 기능 추가
-            document.getElementById('prev-track').addEventListener('click', function() {
-                // 이전 트랙으로 이동하는 로직 (여러 트랙이 있을 경우)
-                console.log('이전 트랙');
+            // 다음 트랙으로 이동
+            function playNextTrack() {
+                let newIndex = currentTrackIndex + 1;
+                if (newIndex >= tracks.length) newIndex = 0;
+                loadAndPlayTrack(newIndex);
+            }
+            
+            // 이벤트 리스너 추가
+            playPauseButton.addEventListener('click', togglePlayPause);
+            prevButton.addEventListener('click', playPreviousTrack);
+            nextButton.addEventListener('click', playNextTrack);
+            
+            // 10초 앞으로/뒤로 기능
+            rewindButton.addEventListener('click', function() {
+                const currentTrack = getCurrentTrack().element;
+                currentTrack.currentTime = Math.max(0, currentTrack.currentTime - 10);
             });
             
-            document.getElementById('rewind').addEventListener('click', function() {
-                // 10초 뒤로 이동
-                audioElement.currentTime = Math.max(0, audioElement.currentTime - 10);
+            forwardButton.addEventListener('click', function() {
+                const currentTrack = getCurrentTrack().element;
+                currentTrack.currentTime = Math.min(currentTrack.duration, currentTrack.currentTime + 10);
             });
             
-            document.getElementById('forward').addEventListener('click', function() {
-                // 10초 앞으로 이동
-                audioElement.currentTime = Math.min(audioElement.duration, audioElement.currentTime + 10);
+            // 트랙 종료 시 다음 트랙으로 자동 이동
+            tracks.forEach(track => {
+                track.element.addEventListener('ended', function() {
+                    playNextTrack();
+                });
+                
+                // 재생 시간 업데이트 및 프로그레스 바 갱신
+                track.element.addEventListener('timeupdate', function() {
+                    if (track === getCurrentTrack()) {
+                        const currentTime = track.element.currentTime;
+                        const duration = track.element.duration;
+                        const progressPercent = (currentTime / duration) * 100;
+                        progressFill.style.width = `${progressPercent}%`;
+                    }
+                });
             });
             
-            document.getElementById('next-track').addEventListener('click', function() {
-                // 다음 트랙으로 이동하는 로직 (여러 트랙이 있을 경우)
-                console.log('다음 트랙');
-            });
+            // 초기 트랙 타이틀 설정
+            updateTrackTitle();
             
             // 갤러리 슬라이더 기능
             const galleryWrapper = document.querySelector('.gallery-wrapper');
