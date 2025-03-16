@@ -12,7 +12,6 @@
   font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", sans-serif;
 }
 .fa-heart:before { content: "♥"; }
-/* 플레이어 컨트롤은 SVG로 대체되었으므로 폴백 불필요 */
 .fa-times:before { content: "×"; }
 .fa-phone:before { content: "📞"; }
 .fa-envelope:before { content: "✉"; }
@@ -174,6 +173,8 @@
             align-items: center;
             width: 36px;
             height: 36px;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
         
         .control-button:hover {
@@ -403,6 +404,8 @@
             color: #555;
             font-size: 1.2rem;
             transition: background-color 0.3s, color 0.3s;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
         
         .gallery-button:hover {
@@ -544,10 +547,10 @@
             overflow: hidden;
         }
         
-        .map-container img {
+        .map-container iframe {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            border: 0;
         }
         
         .map-buttons {
@@ -912,7 +915,7 @@
             <section class="header" id="home">
                 <h1 class="header-title">Love player</h1>
                 <div class="main-image">
-                    <img src="/api/placeholder/600/600" alt="강승현 & 김주은">
+                    <img src="https://source.unsplash.com/random/600x600/?wedding,couple" alt="강승현 & 김주은">
                 </div>
                 <div class="couple-info">
                     <div class="couple-names">
@@ -1072,25 +1075,25 @@
                     <div class="gallery-wrapper">
                         <div class="gallery-slide">
                             <div class="gallery-image">
-                                <img src="/api/placeholder/600/400?text=Wedding+Photo+1" alt="웨딩 사진 1">
+                                <img src="https://source.unsplash.com/random/600x400/?wedding,bride" alt="웨딩 사진 1">
                             </div>
                             <div class="gallery-caption">우리의 첫 만남</div>
                         </div>
                         <div class="gallery-slide">
                             <div class="gallery-image">
-                                <img src="/api/placeholder/600/400?text=Wedding+Photo+2" alt="웨딩 사진 2">
+                                <img src="https://source.unsplash.com/random/600x400/?wedding,groom" alt="웨딩 사진 2">
                             </div>
                             <div class="gallery-caption">함께한 소중한 시간</div>
                         </div>
                         <div class="gallery-slide">
                             <div class="gallery-image">
-                                <img src="/api/placeholder/600/400?text=Wedding+Photo+3" alt="웨딩 사진 3">
+                                <img src="https://source.unsplash.com/random/600x400/?proposal,couple" alt="웨딩 사진 3">
                             </div>
                             <div class="gallery-caption">프로포즈의 순간</div>
                         </div>
                         <div class="gallery-slide">
                             <div class="gallery-image">
-                                <img src="/api/placeholder/600/400?text=Wedding+Photo+4" alt="웨딩 사진 4">
+                                <img src="https://source.unsplash.com/random/600x400/?wedding,flowers" alt="웨딩 사진 4">
                             </div>
                             <div class="gallery-caption">새로운 시작</div>
                         </div>
@@ -1120,10 +1123,10 @@
                     <div class="location-phone">02-1234-5678</div>
                 </div>
                 <div class="map-container">
-                    <img src="/api/placeholder/600/300?text=Wedding+Location+Map" alt="지도">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3162.9403463068973!2d127.07066411204819!3d37.542137427953415!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357ca4d2845e7ccf%3A0x661a0d4f9e620839!2z7IK87JeF7IOB7ZKI66-86rWtIOq0keyXreyLnA!5e0!3m2!1sko!2skr!4v1684847256583!5m2!1sko!2skr" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                 </div>
                 <div class="map-buttons">
-                    <a href="#" class="map-button" id="open-map">
+                    <a href="https://www.google.com/maps/place/%EC%8A%A4%ED%83%80%EC%94%A8%ED%8B%B0+%EC%95%84%ED%8A%B8%ED%99%80/@37.5421374,127.0706641,17z/data=!3m1!4b1!4m6!3m5!1s0x357ca4d2845e7ccf:0x661a0d4f9e620839!8m2!3d37.5421332!4d127.073239!16s%2Fg%2F11b6gnwgnp?entry=ttu" target="_blank" class="map-button" id="open-map">
                         <i class="fas fa-map-marker-alt"></i> 지도
                     </a>
                     <a href="tel:02-1234-5678" class="map-button">
@@ -1258,38 +1261,29 @@
         </div>
     </div>
     
-    <audio id="background-music" preload="auto" crossorigin="anonymous">
-        <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9f33148c5b.mp3?filename=everlasting-love-pianocast-178613.mp3" type="audio/mpeg">
-    </audio>
-    
-    <!-- 추가 음악 요소들 미리 로드 -->
-    <audio id="music-track-1" preload="auto" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9f33148c5b.mp3?filename=everlasting-love-pianocast-178613.mp3" style="display:none"></audio>
-    <audio id="music-track-2" preload="auto" src="https://cdn.pixabay.com/download/audio/2022/02/07/audio_9886d7c968.mp3?filename=acoustic-motivation-11290.mp3" style="display:none"></audio>
-    <audio id="music-track-3" preload="auto" src="https://cdn.pixabay.com/download/audio/2022/01/20/audio_977b432c67.mp3?filename=a-gentle-breeze-relaxing-piano-music-116215.mp3" style="display:none"></audio>
-    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // 트랙 정보 설정
-            const tracks = [
-                {
-                    element: document.getElementById('music-track-1'),
-                    title: "Everlasting Love - PianoCast"
-                },
-                {
-                    element: document.getElementById('music-track-2'),
-                    title: "Acoustic Motivation"
-                },
-                {
-                    element: document.getElementById('music-track-3'),
-                    title: "A Gentle Breeze - Relaxing Piano"
-                }
+            // ============= 오디오 초기화 =============
+            const trackURLs = [
+                "https://cdn.pixabay.com/download/audio/2022/03/15/audio_9f33148c5b.mp3?filename=everlasting-love-pianocast-178613.mp3",
+                "https://cdn.pixabay.com/download/audio/2022/02/07/audio_9886d7c968.mp3?filename=acoustic-motivation-11290.mp3", 
+                "https://cdn.pixabay.com/download/audio/2022/01/20/audio_977b432c67.mp3?filename=a-gentle-breeze-relaxing-piano-music-116215.mp3"
             ];
             
-            // 현재 트랙 인덱스
+            const trackTitles = [
+                "Everlasting Love - PianoCast",
+                "Acoustic Motivation", 
+                "A Gentle Breeze - Relaxing Piano"
+            ];
+            
+            // 단일 오디오 요소 생성
+            const audioElement = new Audio();
+            audioElement.preload = "auto";
+            audioElement.volume = 0.5;
             let currentTrackIndex = 0;
             let isPlaying = false;
             
-            // UI 요소 선택
+            // UI 요소
             const playPauseButton = document.getElementById('play-pause');
             const playIcon = document.getElementById('play-icon');
             const pauseIcon = document.getElementById('pause-icon');
@@ -1301,47 +1295,24 @@
             const trackInfoElement = document.querySelector('.track-info');
             const progressFill = document.querySelector('.progress-fill');
             
-            // 현재 트랙 가져오기
-            function getCurrentTrack() {
-                return tracks[currentTrackIndex];
+            // 초기 트랙 로드
+            loadTrack(currentTrackIndex);
+            
+            // 트랙 로드 함수
+            function loadTrack(index) {
+                audioElement.src = trackURLs[index];
+                trackTitleElement.textContent = trackTitles[index];
+                audioElement.load();
+                updateTrackInfo();
             }
             
-            // 트랙 타이틀 업데이트
-            function updateTrackTitle() {
-                trackTitleElement.textContent = getCurrentTrack().title;
+            // 트랙 정보 업데이트
+            function updateTrackInfo() {
+                trackTitleElement.textContent = trackTitles[currentTrackIndex];
                 trackInfoElement.classList.add('track-changed');
                 setTimeout(() => {
                     trackInfoElement.classList.remove('track-changed');
                 }, 500);
-            }
-            
-            // 트랙 로드 및 재생
-            function loadAndPlayTrack(index) {
-                // 모든 트랙 일시정지
-                tracks.forEach(track => {
-                    track.element.pause();
-                    track.element.currentTime = 0;
-                });
-                
-                currentTrackIndex = index;
-                const currentTrack = getCurrentTrack().element;
-                
-                // 트랙 정보 업데이트
-                updateTrackTitle();
-                
-                // 트랙 재생
-                const playPromise = currentTrack.play();
-                
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        isPlaying = true;
-                        updatePlayPauseButton();
-                    }).catch(error => {
-                        console.error('음악 재생 실패:', error);
-                        isPlaying = false;
-                        updatePlayPauseButton();
-                    });
-                }
             }
             
             // 재생/일시정지 버튼 업데이트
@@ -1357,36 +1328,60 @@
             
             // 재생/일시정지 토글
             function togglePlayPause() {
-                const currentTrack = getCurrentTrack().element;
-                
                 if (isPlaying) {
-                    currentTrack.pause();
+                    audioElement.pause();
+                    isPlaying = false;
                 } else {
-                    const playPromise = currentTrack.play();
+                    // 모바일에서 자동 재생 문제 해결을 위한 코드
+                    const playPromise = audioElement.play();
                     
                     if (playPromise !== undefined) {
-                        playPromise.catch(error => {
-                            console.error('음악 재생 실패:', error);
+                        playPromise.then(() => {
+                            isPlaying = true;
+                        }).catch(error => {
+                            console.error("Play failed because: ", error);
+                            // 자동 재생 정책을 우회하기 위한 조치
+                            audioElement.muted = true;
+                            audioElement.play().then(() => {
+                                audioElement.muted = false;
+                                isPlaying = true;
+                            }).catch(e => {
+                                console.error("Even muted autoplay failed: ", e);
+                            });
                         });
                     }
                 }
-                
-                isPlaying = !isPlaying;
                 updatePlayPauseButton();
             }
             
-            // 이전 트랙으로 이동
+            // 이전 트랙 재생
             function playPreviousTrack() {
-                let newIndex = currentTrackIndex - 1;
-                if (newIndex < 0) newIndex = tracks.length - 1;
-                loadAndPlayTrack(newIndex);
+                currentTrackIndex = (currentTrackIndex - 1 + trackURLs.length) % trackURLs.length;
+                loadTrack(currentTrackIndex);
+                if (isPlaying) {
+                    const playPromise = audioElement.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => {
+                            console.error("Play failed: ", error);
+                        });
+                    }
+                }
+                updateTrackInfo();
             }
             
-            // 다음 트랙으로 이동
+            // 다음 트랙 재생
             function playNextTrack() {
-                let newIndex = currentTrackIndex + 1;
-                if (newIndex >= tracks.length) newIndex = 0;
-                loadAndPlayTrack(newIndex);
+                currentTrackIndex = (currentTrackIndex + 1) % trackURLs.length;
+                loadTrack(currentTrackIndex);
+                if (isPlaying) {
+                    const playPromise = audioElement.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(error => {
+                            console.error("Play failed: ", error);
+                        });
+                    }
+                }
+                updateTrackInfo();
             }
             
             // 이벤트 리스너 추가
@@ -1394,43 +1389,60 @@
             prevButton.addEventListener('click', playPreviousTrack);
             nextButton.addEventListener('click', playNextTrack);
             
+            // 모바일 환경을 위한 터치 이벤트 추가
+            playPauseButton.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                togglePlayPause();
+            });
+            
+            prevButton.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                playPreviousTrack();
+            });
+            
+            nextButton.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                playNextTrack();
+            });
+            
             // 10초 앞으로/뒤로 기능
             rewindButton.addEventListener('click', function() {
-                const currentTrack = getCurrentTrack().element;
-                currentTrack.currentTime = Math.max(0, currentTrack.currentTime - 10);
+                audioElement.currentTime = Math.max(0, audioElement.currentTime - 10);
+            });
+            
+            rewindButton.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                audioElement.currentTime = Math.max(0, audioElement.currentTime - 10);
             });
             
             forwardButton.addEventListener('click', function() {
-                const currentTrack = getCurrentTrack().element;
-                currentTrack.currentTime = Math.min(currentTrack.duration, currentTrack.currentTime + 10);
+                audioElement.currentTime = Math.min(audioElement.duration, audioElement.currentTime + 10);
+            });
+            
+            forwardButton.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                audioElement.currentTime = Math.min(audioElement.duration, audioElement.currentTime + 10);
             });
             
             // 트랙 종료 시 다음 트랙으로 자동 이동
-            tracks.forEach(track => {
-                track.element.addEventListener('ended', function() {
-                    playNextTrack();
-                });
-                
-                // 재생 시간 업데이트 및 프로그레스 바 갱신
-                track.element.addEventListener('timeupdate', function() {
-                    if (track === getCurrentTrack()) {
-                        const currentTime = track.element.currentTime;
-                        const duration = track.element.duration;
-                        const progressPercent = (currentTime / duration) * 100;
-                        progressFill.style.width = `${progressPercent}%`;
-                    }
-                });
+            audioElement.addEventListener('ended', function() {
+                playNextTrack();
             });
             
-            // 초기 트랙 타이틀 설정
-            updateTrackTitle();
+            // 재생 시간 업데이트 및 프로그레스 바 갱신
+            audioElement.addEventListener('timeupdate', function() {
+                const currentTime = audioElement.currentTime;
+                const duration = audioElement.duration || 1; // 0으로 나누기 방지
+                const progressPercent = (currentTime / duration) * 100;
+                progressFill.style.width = `${progressPercent}%`;
+            });
             
-            // 갤러리 슬라이더 기능
+            // ============= 갤러리 슬라이더 =============
             const galleryWrapper = document.querySelector('.gallery-wrapper');
             const slides = document.querySelectorAll('.gallery-slide');
             const indicators = document.querySelectorAll('.gallery-indicator');
-            const prevButton = document.querySelector('.prev-slide');
-            const nextButton = document.querySelector('.next-slide');
+            const prevSlideBtn = document.querySelector('.prev-slide');
+            const nextSlideBtn = document.querySelector('.next-slide');
             let currentSlide = 0;
             const slideCount = slides.length;
             
@@ -1453,17 +1465,32 @@
             }
             
             // 슬라이드 버튼 이벤트
-            prevButton.addEventListener('click', () => {
+            prevSlideBtn.addEventListener('click', () => {
                 goToSlide(currentSlide - 1);
             });
             
-            nextButton.addEventListener('click', () => {
+            prevSlideBtn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                goToSlide(currentSlide - 1);
+            });
+            
+            nextSlideBtn.addEventListener('click', () => {
+                goToSlide(currentSlide + 1);
+            });
+            
+            nextSlideBtn.addEventListener('touchend', (e) => {
+                e.preventDefault();
                 goToSlide(currentSlide + 1);
             });
             
             // 인디케이터 클릭 이벤트
             indicators.forEach((indicator, index) => {
                 indicator.addEventListener('click', () => {
+                    goToSlide(index);
+                });
+                
+                indicator.addEventListener('touchend', (e) => {
+                    e.preventDefault();
                     goToSlide(index);
                 });
             });
@@ -1473,13 +1500,23 @@
                 goToSlide(currentSlide + 1);
             }, 5000);
             
-            // 슬라이드에 마우스 올리면 자동 슬라이드 멈춤
+            // 슬라이드에 마우스/터치 올리면 자동 슬라이드 멈춤
             const galleryContainer = document.querySelector('.gallery-container');
             galleryContainer.addEventListener('mouseenter', () => {
                 clearInterval(slideInterval);
             });
             
+            galleryContainer.addEventListener('touchstart', () => {
+                clearInterval(slideInterval);
+            }, { passive: true });
+            
             galleryContainer.addEventListener('mouseleave', () => {
+                slideInterval = setInterval(() => {
+                    goToSlide(currentSlide + 1);
+                }, 5000);
+            });
+            
+            galleryContainer.addEventListener('touchend', () => {
                 slideInterval = setInterval(() => {
                     goToSlide(currentSlide + 1);
                 }, 5000);
@@ -1507,7 +1544,7 @@
                 }
             }
             
-            // 계좌번호 모달
+            // ============= 계좌번호 모달 =============
             const modal = document.getElementById('account-modal');
             const groomAccountBtn = document.getElementById('groom-account');
             const brideAccountBtn = document.getElementById('bride-account');
@@ -1533,8 +1570,27 @@
             brideAccountBtn.addEventListener('click', openModal);
             viewAllAccountsBtn.addEventListener('click', openModal);
             
+            groomAccountBtn.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                openModal();
+            });
+            
+            brideAccountBtn.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                openModal();
+            });
+            
+            viewAllAccountsBtn.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                openModal();
+            });
+            
             // 모달 닫기
             closeModalBtn.addEventListener('click', closeModal);
+            closeModalBtn.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                closeModal();
+            });
             
             window.addEventListener('click', function(event) {
                 if (event.target === modal) {
@@ -1542,36 +1598,69 @@
                 }
             });
             
-            // 계좌번호 복사
+            window.addEventListener('touchend', function(event) {
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
+            
+            // ============= 계좌번호 복사 =============
             const copyButtons = document.querySelectorAll('.copy-button');
             
             copyButtons.forEach(btn => {
                 btn.addEventListener('click', function() {
                     const accountNumber = this.getAttribute('data-account');
-                    navigator.clipboard.writeText(accountNumber).then(() => {
-                        // 복사 성공 표시
-                        const originalText = this.innerHTML;
-                        this.innerHTML = '<i class="fas fa-check"></i> 복사됨';
-                        this.style.backgroundColor = '#e6f7e6';
-                        
-                        setTimeout(() => {
-                            this.innerHTML = originalText;
-                            this.style.backgroundColor = '#f5f5f5';
-                        }, 2000);
-                    }).catch(err => {
-                        alert('계좌번호 복사에 실패했습니다. 직접 선택하여 복사해주세요.');
-                    });
+                    copyTextToClipboard(accountNumber, this);
+                });
+                
+                btn.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    const accountNumber = this.getAttribute('data-account');
+                    copyTextToClipboard(accountNumber, this);
                 });
             });
             
-            // 방명록 기능
+            function copyTextToClipboard(text, button) {
+                // 모바일에서 복사 기능을 위한 fallback
+                let textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.position = "fixed";  // 화면 밖으로 위치시킴
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                
+                try {
+                    const successful = document.execCommand('copy');
+                    const originalText = button.innerHTML;
+                    button.innerHTML = '<i class="fas fa-check"></i> 복사됨';
+                    button.style.backgroundColor = '#e6f7e6';
+                    
+                    setTimeout(() => {
+                        button.innerHTML = originalText;
+                        button.style.backgroundColor = '#f5f5f5';
+                    }, 2000);
+                } catch (err) {
+                    console.error('복사 실패:', err);
+                    alert('계좌번호 복사에 실패했습니다. 직접 선택하여 복사해주세요.');
+                }
+                
+                document.body.removeChild(textArea);
+            }
+            
+            // ============= 방명록 기능 =============
             const submitButton = document.getElementById('submit-message');
             const nameInput = document.getElementById('guest-name');
             const passwordInput = document.getElementById('guest-password');
             const messageInput = document.getElementById('guest-message');
             const entriesContainer = document.getElementById('guestbook-entries');
             
-            submitButton.addEventListener('click', function() {
+            submitButton.addEventListener('click', addGuestbookEntry);
+            submitButton.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                addGuestbookEntry();
+            });
+            
+            function addGuestbookEntry() {
                 const name = nameInput.value.trim();
                 const password = passwordInput.value.trim();
                 const message = messageInput.value.trim();
@@ -1608,7 +1697,11 @@
                 // 삭제 버튼 이벤트 추가 (새로 추가된 항목)
                 const newDeleteButton = entriesContainer.querySelector('.guestbook-entry:first-child .entry-delete');
                 newDeleteButton.addEventListener('click', deleteEntry);
-            });
+                newDeleteButton.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    deleteEntry(e);
+                });
+            }
             
             // 방명록 삭제 기능
             function deleteEntry(event) {
@@ -1629,56 +1722,82 @@
             // 기존 삭제 버튼에 이벤트 연결
             document.querySelectorAll('.entry-delete').forEach(btn => {
                 btn.addEventListener('click', deleteEntry);
+                btn.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    deleteEntry(e);
+                });
             });
             
-            // 참석 의사 전달 버튼
+            // ============= 참석 의사 전달 버튼 =============
             const rsvpButton = document.querySelector('.rsvp-button');
             
-            rsvpButton.addEventListener('click', function() {
-                alert('참석 의사가 전달되었습니다. 감사합니다.');
-                this.innerHTML = '<i class="fas fa-check"></i> 전달완료';
-                this.style.backgroundColor = '#8A8ED8';
-                setTimeout(() => {
-                    this.innerHTML = '<i class="fas fa-envelope-open-text"></i> 전달하기';
-                }, 3000);
-            });
-            
-            // 지도 버튼 이벤트
-            document.getElementById('open-map').addEventListener('click', function(e) {
+            rsvpButton.addEventListener('click', confirmRSVP);
+            rsvpButton.addEventListener('touchend', function(e) {
                 e.preventDefault();
-                // 실제로는 네이버 또는 카카오 지도 연결
-                alert('지도 앱으로 연결됩니다.');
+                confirmRSVP();
             });
             
-            // 스크롤 시 진행바 업데이트
-            const progressBar = document.querySelector('.progress-fill');
+            function confirmRSVP() {
+                alert('참석 의사가 전달되었습니다. 감사합니다.');
+                rsvpButton.innerHTML = '<i class="fas fa-check"></i> 전달완료';
+                rsvpButton.style.backgroundColor = '#8A8ED8';
+                setTimeout(() => {
+                    rsvpButton.innerHTML = '<i class="fas fa-envelope-open-text"></i> 전달하기';
+                }, 3000);
+            }
+            
+            // ============= 스크롤 진행바 업데이트 =============
             const screen = document.querySelector('.screen');
             
-            screen.addEventListener('scroll', function() {
+            screen.addEventListener('scroll', updateProgressBar);
+            
+            function updateProgressBar() {
                 const scrollTop = screen.scrollTop;
                 const scrollHeight = screen.scrollHeight - screen.clientHeight;
                 const scrollPercentage = (scrollTop / scrollHeight) * 100;
                 
-                progressBar.style.width = `${scrollPercentage}%`;
-            });
+                progressFill.style.width = `${scrollPercentage}%`;
+            }
             
-            // 공유 버튼 기능
+            // ============= 공유 버튼 기능 =============
             document.querySelectorAll('.share-button').forEach(button => {
-                button.addEventListener('click', function(e) {
+                button.addEventListener('click', shareContent);
+                button.addEventListener('touchend', function(e) {
                     e.preventDefault();
-                    
-                    // 공유 기능 구현
-                    if (this.innerHTML.includes('facebook')) {
-                        alert('페이스북으로 공유합니다.');
-                    } else if (this.innerHTML.includes('TALK')) {
-                        alert('카카오톡으로 공유합니다.');
-                    } else if (this.innerHTML.includes('link')) {
-                        navigator.clipboard.writeText(window.location.href).then(() => {
-                            alert('링크가 복사되었습니다.');
-                        });
-                    }
+                    shareContent.call(this, e);
                 });
             });
+            
+            function shareContent(e) {
+                e.preventDefault();
+                
+                // 공유 기능 구현
+                if (this.innerHTML.includes('facebook')) {
+                    alert('페이스북으로 공유합니다.');
+                } else if (this.innerHTML.includes('TALK')) {
+                    alert('카카오톡으로 공유합니다.');
+                } else if (this.innerHTML.includes('link')) {
+                    // 모바일에서 클립보드 복사 기능
+                    let textArea = document.createElement("textarea");
+                    textArea.value = window.location.href;
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    
+                    try {
+                        document.execCommand('copy');
+                        alert('링크가 복사되었습니다.');
+                    } catch (err) {
+                        console.error('링크 복사 실패:', err);
+                        alert('링크 복사에 실패했습니다.');
+                    }
+                    
+                    document.body.removeChild(textArea);
+                }
+            }
+            
+            // 페이지 로드 시 첫 번째 트랙 정보 표시
+            updateTrackInfo();
         });
     </script>
 </body>
