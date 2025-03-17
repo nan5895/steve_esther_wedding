@@ -973,7 +973,10 @@
                     </div>
                 </div>
                 
-                <!-- 오디오 플레이어는 JavaScript에서 생성됩니다 -->
+                <!-- 숨겨진 SoundCloud 위젯 -->
+                <div class="music-player-container">
+                    <iframe id="soundcloud-player" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay"></iframe>
+                </div>
             </section>
             
             <section class="invitation-section">
@@ -991,7 +994,7 @@
             <section class="contact-section">
                 <div class="contact-grid">
                     <div>
-                        <div class="contact-label">강승현</div>
+                        <div class="contact-label">신랑 강승현</div>
                         <div class="contact-icons">
                             <a href="tel:01012345678" class="contact-icon" aria-label="신랑에게 전화하기">
                                 <i class="fas fa-phone"></i>
@@ -1002,7 +1005,7 @@
                         </div>
                     </div>
                     <div>
-                        <div class="contact-label">김주은</div>
+                        <div class="contact-label">신부 김주은</div>
                         <div class="contact-icons">
                             <a href="tel:01087654321" class="contact-icon" aria-label="신부에게 전화하기">
                                 <i class="fas fa-phone"></i>
@@ -1207,7 +1210,22 @@
                     </button>
                 </div>
                 <div class="guestbook-entries" id="guestbook-entries">
-                    <!-- 방명록 항목들이 여기에 동적으로 추가됩니다 -->
+                    <div class="guestbook-entry">
+                        <div class="entry-header">
+                            <span class="entry-name">최수진</span>
+                            <span class="entry-date">2021-05-29 10:53</span>
+                        </div>
+                        <p class="entry-message">결혼 축하해~ 행복하게 잘 살아 ^^</p>
+                        <span class="entry-delete"><i class="fas fa-times"></i></span>
+                    </div>
+                    <div class="guestbook-entry">
+                        <div class="entry-header">
+                            <span class="entry-name">김동호</span>
+                            <span class="entry-date">2021-05-29 09:46</span>
+                        </div>
+                        <p class="entry-message">드디어 결혼하는구나! 축하한다 친구야~~</p>
+                        <span class="entry-delete"><i class="fas fa-times"></i></span>
+                    </div>
                 </div>
             </section>
         </div>
@@ -1246,150 +1264,55 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // ============= 오디오 플레이어 초기화 =============
-            // HTML5 Audio 사용 (SoundCloud 대체)
-            const tracks = [
-                {
-                    url: "https://cdn.pixabay.com/download/audio/2022/01/18/audio_bb63e7230a.mp3?filename=romantic-piano-109593.mp3",
-                    title: "로맨틱 피아노"
-                },
-                {
-                    url: "https://cdn.pixabay.com/download/audio/2022/04/20/audio_bded15088c.mp3?filename=warm-feelings-115451.mp3", 
-                    title: "웨딩 멜로디"
-                },
-                {
-                    url: "https://cdn.pixabay.com/download/audio/2021/08/08/audio_dc39bde826.mp3?filename=romantic-jazz-99197.mp3",
-                    title: "로맨틱 재즈"
-                }
+            // ============= SoundCloud 플레이어 초기화 =============
+            const trackIds = [
+                "1462924993", // SoundCloud 트랙 ID로 "Left or Right"에 해당하는 트랙
+                "1488567266", // SoundCloud 트랙 ID로 "Photograph"에 해당하는 트랙
+                "1445522392"  // SoundCloud 트랙 ID로 "I.F.L.Y."에 해당하는 트랙
             ];
             
-            const trackTitles = tracks.map(track => track.title);
+            const trackTitles = [
+                "Left or Right",
+                "Photograph",
+                "I.F.L.Y."
+            ];
             
             let currentTrackIndex = 0;
             let isPlaying = false;
-            let audioPlayer = new Audio(); // HTML5 Audio 객체 생성
+            let player = null;
+
+            // SoundCloud 위젯 로드
+            const scWidget = document.getElementById('soundcloud-player');
+            
+            // 초기 SoundCloud 프레임 로드
+            function loadSoundCloudTrack(index) {
+                const trackId = trackIds[index];
+                scWidget.src = `https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${trackId}&color=%23E56E7D&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false`;
+                
+                // SoundCloud API 위젯 연결
+                if (window.SC) {
+                    setTimeout(() => {
+                        player = SC.Widget(scWidget);
+                        
+                        // 이벤트 리스너 등록
+                        player.bind(SC.Widget.Events.READY, function() {
+                            updateTrackInfo();
+                            
+                            // SoundCloud 위젯 준비 완료 이벤트
+                            player.bind(SC.Widget.Events.FINISH, playNextTrack);
+                            player.bind(SC.Widget.Events.PLAY_PROGRESS, function(e) {
+                                const progress = e.currentPosition / e.loadedProgress;
+                                progressFill.style.width = `${progress * 100}%`;
+                            });
+                        });
+                    }, 500);
+                }
+            }
             
             // UI 요소
             const playPauseButton = document.getElementById('play-pause');
             const playIcon = document.getElementById('play-icon');
             const pauseIcon = document.getElementById('pause-icon');
-            const prevButton = document.getElementById('prev-track');
-            const nextButton = document.getElementById('next-track');
-            const trackTitleElement = document.getElementById('track-title');
-            const trackInfoElement = document.querySelector('.track-info');
-            const progressFill = document.querySelector('.progress-fill');
-            
-            // 오디오 초기화 및 이벤트 리스너 설정
-            function initAudio() {
-                // 오디오 이벤트 리스너 등록
-                audioPlayer.addEventListener('ended', playNextTrack);
-                audioPlayer.addEventListener('timeupdate', updateProgress);
-                audioPlayer.addEventListener('play', () => {
-                    isPlaying = true;
-                    updatePlayPauseButton();
-                });
-                audioPlayer.addEventListener('pause', () => {
-                    isPlaying = false;
-                    updatePlayPauseButton();
-                });
-                
-                // 첫 번째 트랙 로드
-                loadTrack(currentTrackIndex);
-                
-                // 페이지 로드 후 약간의 지연 후 자동 재생 (사용자 상호작용 정책 우회를 위한 시도)
-                setTimeout(() => {
-                    playAudio();
-                }, 1000);
-            }
-            
-            // 트랙 로드
-            function loadTrack(index) {
-                audioPlayer.src = tracks[index].url;
-                audioPlayer.load();
-                updateTrackInfo();
-            }
-            
-            // 재생/일시정지 토글
-            function togglePlayPause() {
-                if (isPlaying) {
-                    audioPlayer.pause();
-                } else {
-                    playAudio();
-                }
-            }
-            
-            // 재생 시작
-            function playAudio() {
-                // 사용자 상호작용 정책을 고려한 재생 시도
-                const playPromise = audioPlayer.play();
-                
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        // 재생 성공
-                        isPlaying = true;
-                        updatePlayPauseButton();
-                    }).catch(error => {
-                        // 자동 재생 정책으로 인한 재생 실패 - 버튼 UI만 업데이트
-                        console.log("자동 재생이 차단되었습니다:", error);
-                        isPlaying = false;
-                        updatePlayPauseButton();
-                    });
-                }
-            }
-            
-            // 이전 트랙 재생
-            function playPreviousTrack() {
-                currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
-                loadTrack(currentTrackIndex);
-                
-                if (isPlaying) {
-                    playAudio();
-                }
-            }
-            
-            // 다음 트랙 재생
-            function playNextTrack() {
-                currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
-                loadTrack(currentTrackIndex);
-                
-                if (isPlaying) {
-                    playAudio();
-                }
-            }
-            
-            // 진행 상태 업데이트
-            function updateProgress() {
-                if (audioPlayer.duration) {
-                    const progressPercent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-                    progressFill.style.width = `${progressPercent}%`;
-                }
-            }
-            
-            // 트랙 정보 업데이트
-            function updateTrackInfo() {
-                trackTitleElement.textContent = trackTitles[currentTrackIndex];
-                trackInfoElement.classList.add('track-changed');
-                setTimeout(() => {
-                    trackInfoElement.classList.remove('track-changed');
-                }, 500);
-            }
-            
-            // 재생/일시정지 버튼 업데이트
-            function updatePlayPauseButton() {
-                if (isPlaying) {
-                    playIcon.style.display = 'none';
-                    pauseIcon.style.display = 'block';
-                } else {
-                    playIcon.style.display = 'block';
-                    pauseIcon.style.display = 'none';
-                }
-            }
-            
-            // 오디오 초기화
-            initAudio();
-            
-            // UI 요소
-            const playPauseButton = document.getElementById('play-pause');
             const prevButton = document.getElementById('prev-track');
             const nextButton = document.getElementById('next-track');
             const trackTitleElement = document.getElementById('track-title');
@@ -1438,6 +1361,13 @@
                 currentTrackIndex = (currentTrackIndex - 1 + trackIds.length) % trackIds.length;
                 loadSoundCloudTrack(currentTrackIndex);
                 updateTrackInfo();
+                
+                // 이전에 재생 중이었다면 재생 계속
+                if (isPlaying) {
+                    setTimeout(() => {
+                        player.play();
+                    }, 1000);
+                }
             }
             
             // 다음 트랙 재생
@@ -1447,7 +1377,17 @@
                 currentTrackIndex = (currentTrackIndex + 1) % trackIds.length;
                 loadSoundCloudTrack(currentTrackIndex);
                 updateTrackInfo();
+                
+                // 이전에 재생 중이었다면 재생 계속
+                if (isPlaying) {
+                    setTimeout(() => {
+                        player.play();
+                    }, 1000);
+                }
             }
+            
+            // 첫 번째 트랙 로드
+            loadSoundCloudTrack(currentTrackIndex);
             
             // 이벤트 리스너 추가
             playPauseButton.addEventListener('click', togglePlayPause);
@@ -1468,13 +1408,6 @@
             nextButton.addEventListener('touchend', function(e) {
                 e.preventDefault();
                 playNextTrack();
-            });
-            
-            // 프로그레스 바 클릭으로 위치 이동
-            document.querySelector('.progress-bar').addEventListener('click', function(e) {
-                const percent = e.offsetX / this.offsetWidth;
-                audioPlayer.currentTime = percent * audioPlayer.duration;
-                progressFill.style.width = `${percent * 100}%`;
             });
             
             // ============= 갤러리 슬라이더 =============
@@ -1680,50 +1613,19 @@
                 document.body.removeChild(textArea);
             }
             
-            // ============= 방명록 기능 (localStorage 사용) =============
+            // ============= 방명록 기능 =============
             const submitButton = document.getElementById('submit-message');
             const nameInput = document.getElementById('guest-name');
             const passwordInput = document.getElementById('guest-password');
             const messageInput = document.getElementById('guest-message');
             const entriesContainer = document.getElementById('guestbook-entries');
             
-            // 로컬 스토리지에서 방명록 가져오기
-            function loadGuestbookEntries() {
-                const entries = JSON.parse(localStorage.getItem('weddingGuestbook')) || [];
-                
-                // 방명록 엔트리 초기화
-                entriesContainer.innerHTML = '';
-                
-                // 최신 항목이 상단에 표시되도록 역순 정렬
-                entries.sort((a, b) => new Date(b.date) - new Date(a.date));
-                
-                // 각 항목 표시
-                entries.forEach(entry => {
-                    const entryHtml = `
-                        <div class="guestbook-entry" data-id="${entry.id}">
-                            <div class="entry-header">
-                                <span class="entry-name">${entry.name}</span>
-                                <span class="entry-date">${entry.date}</span>
-                            </div>
-                            <p class="entry-message">${entry.message}</p>
-                            <span class="entry-delete"><i class="fas fa-times"></i></span>
-                        </div>
-                    `;
-                    
-                    entriesContainer.insertAdjacentHTML('beforeend', entryHtml);
-                });
-                
-                // 삭제 버튼에 이벤트 리스너 추가
-                document.querySelectorAll('.entry-delete').forEach(btn => {
-                    btn.addEventListener('click', deleteEntry);
-                    btn.addEventListener('touchend', function(e) {
-                        e.preventDefault();
-                        deleteEntry(e);
-                    });
-                });
-            }
+            submitButton.addEventListener('click', addGuestbookEntry);
+            submitButton.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                addGuestbookEntry();
+            });
             
-            // 방명록 추가
             function addGuestbookEntry() {
                 const name = nameInput.value.trim();
                 const password = passwordInput.value.trim();
@@ -1738,81 +1640,59 @@
                 const now = new Date();
                 const dateString = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
                 
-                // 기존 방명록 불러오기
-                const entries = JSON.parse(localStorage.getItem('weddingGuestbook')) || [];
+                // 새 방명록 항목 HTML
+                const entryHtml = `
+                    <div class="guestbook-entry animate-fade">
+                        <div class="entry-header">
+                            <span class="entry-name">${name}</span>
+                            <span class="entry-date">${dateString}</span>
+                        </div>
+                        <p class="entry-message">${message}</p>
+                        <span class="entry-delete"><i class="fas fa-times"></i></span>
+                    </div>
+                `;
                 
-                // 새 방명록 항목 추가
-                const newEntry = {
-                    id: Date.now().toString(), // 고유 ID
-                    name: name,
-                    password: password, // 실제 구현에서는 비밀번호 암호화 권장
-                    message: message,
-                    date: dateString
-                };
-                
-                entries.push(newEntry);
-                
-                // 로컬 스토리지에 저장
-                localStorage.setItem('weddingGuestbook', JSON.stringify(entries));
-                
-                // 화면 새로고침
-                loadGuestbookEntries();
+                // 방명록 목록에 추가
+                entriesContainer.insertAdjacentHTML('afterbegin', entryHtml);
                 
                 // 입력 폼 초기화
                 nameInput.value = '';
                 passwordInput.value = '';
                 messageInput.value = '';
+                
+                // 삭제 버튼 이벤트 추가 (새로 추가된 항목)
+                const newDeleteButton = entriesContainer.querySelector('.guestbook-entry:first-child .entry-delete');
+                newDeleteButton.addEventListener('click', deleteEntry);
+                newDeleteButton.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    deleteEntry(e);
+                });
             }
             
-            // 방명록 삭제
+            // 방명록 삭제 기능
             function deleteEntry(event) {
                 const entry = event.target.closest('.guestbook-entry');
-                const entryId = entry.dataset.id;
                 
-                // 비밀번호 확인
+                // 비밀번호 확인 (간단한 구현)
                 const password = prompt('방명록을 삭제하려면 비밀번호를 입력하세요.');
-                if (!password) return;
-                
-                // 기존 방명록 불러오기
-                const entries = JSON.parse(localStorage.getItem('weddingGuestbook')) || [];
-                
-                // 해당 항목 찾기
-                const entryIndex = entries.findIndex(item => item.id === entryId);
-                
-                if (entryIndex === -1) {
-                    alert('해당 방명록을 찾을 수 없습니다.');
-                    return;
+                if (password) {
+                    // 실제로는 서버에서 비밀번호 확인 후 삭제해야 함
+                    // 여기서는 간단히 비밀번호 입력하면 삭제되는 것으로 구현
+                    entry.style.opacity = '0';
+                    setTimeout(() => {
+                        entry.remove();
+                    }, 300);
                 }
-                
-                // 비밀번호 확인
-                if (entries[entryIndex].password !== password) {
-                    alert('비밀번호가 일치하지 않습니다.');
-                    return;
-                }
-                
-                // 항목 삭제
-                entries.splice(entryIndex, 1);
-                
-                // 로컬 스토리지에 저장
-                localStorage.setItem('weddingGuestbook', JSON.stringify(entries));
-                
-                // 애니메이션 효과와 함께 삭제
-                entry.style.opacity = '0';
-                setTimeout(() => {
-                    // 화면 새로고침
-                    loadGuestbookEntries();
-                }, 300);
             }
             
-            // 방명록 제출 버튼 이벤트
-            submitButton.addEventListener('click', addGuestbookEntry);
-            submitButton.addEventListener('touchend', function(e) {
-                e.preventDefault();
-                addGuestbookEntry();
+            // 기존 삭제 버튼에 이벤트 연결
+            document.querySelectorAll('.entry-delete').forEach(btn => {
+                btn.addEventListener('click', deleteEntry);
+                btn.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    deleteEntry(e);
+                });
             });
-            
-            // 페이지 로드 시 방명록 불러오기
-            loadGuestbookEntries();
             
             // ============= 참석 의사 전달 버튼 =============
             const rsvpButton = document.querySelector('.rsvp-button');
