@@ -5,33 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>강승현 & 김주은의 결혼식에 초대합니다</title>
     <!-- Font Awesome 6 -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
-<!-- 아이콘 폴백 스타일 -->
-<style>
-.fas, .far, .fab {
-  font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", sans-serif;
-}
-.fa-heart:before { content: "♥"; }
-.fa-times:before { content: "×"; }
-.fa-phone:before { content: "📞"; }
-.fa-envelope:before { content: "✉"; }
-.fa-chevron-left:before { content: "<"; }
-.fa-chevron-right:before { content: ">"; }
-.fa-map-marker-alt:before { content: "📍"; }
-.fa-bus:before { content: "🚌"; }
-.fa-car:before { content: "🚗"; }
-.fa-subway:before { content: "🚇"; }
-.fa-parking:before { content: "🅿"; }
-.fa-utensils:before { content: "🍽"; }
-.fa-envelope-open-text:before { content: "📩"; }
-.fa-gift:before { content: "🎁"; }
-.fa-list-ul:before { content: "📋"; }
-.fa-pen-fancy:before { content: "✒"; }
-.fa-copy:before { content: "📋"; }
-.fa-check:before { content: "✓"; }
-.fa-facebook-f:before { content: "f"; }
-.fa-link:before { content: "🔗"; }
-</style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <!-- SoundCloud API -->
+    <script src="https://w.soundcloud.com/player/api.js"></script>
+    <!-- 아이콘 폴백 스타일 -->
+    <style>
+    .fas, .far, .fab {
+      font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", sans-serif;
+    }
+    .fa-heart:before { content: "♥"; }
+    .fa-times:before { content: "×"; }
+    .fa-phone:before { content: "📞"; }
+    .fa-envelope:before { content: "✉"; }
+    .fa-chevron-left:before { content: "<"; }
+    .fa-chevron-right:before { content: ">"; }
+    .fa-map-marker-alt:before { content: "📍"; }
+    .fa-bus:before { content: "🚌"; }
+    .fa-car:before { content: "🚗"; }
+    .fa-subway:before { content: "🚇"; }
+    .fa-parking:before { content: "🅿"; }
+    .fa-utensils:before { content: "🍽"; }
+    .fa-envelope-open-text:before { content: "📩"; }
+    .fa-gift:before { content: "🎁"; }
+    .fa-list-ul:before { content: "📋"; }
+    .fa-pen-fancy:before { content: "✒"; }
+    .fa-copy:before { content: "📋"; }
+    .fa-check:before { content: "✓"; }
+    .fa-facebook-f:before { content: "f"; }
+    .fa-link:before { content: "🔗"; }
+    </style>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;200;300;400;500;700&family=Noto+Serif+KR:wght@200;300;400;500&family=Dancing+Script:wght@400;500;600&family=Cormorant+Garamond:wght@300;400;500&display=swap');
         
@@ -315,6 +317,15 @@
             0% { transform: scale(1); }
             50% { transform: scale(1.05); background-color: rgba(229, 110, 125, 0.2); }
             100% { transform: scale(1); }
+        }
+
+        /* 음악 플레이어 스타일 */
+        .music-player-container {
+            display: none;
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
         }
         
         /* 섹션 스타일 */
@@ -915,7 +926,7 @@
             <section class="header" id="home">
                 <h1 class="header-title">Love player</h1>
                 <div class="main-image">
-                    <img src="https://i.ibb.co/gMVnKp6/wedding-couple.jpg" alt="강승현 & 김주은">
+                    <img src="./main_image/main.JPG" alt="강승현 & 김주은">
                 </div>
                 <div class="couple-info">
                     <div class="couple-names">
@@ -960,6 +971,11 @@
                         </div>
                         <span id="track-title">트랙을 선택해 주세요</span>
                     </div>
+                </div>
+                
+                <!-- 숨겨진 SoundCloud 위젯 -->
+                <div class="music-player-container">
+                    <iframe id="soundcloud-player" width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay"></iframe>
                 </div>
             </section>
             
@@ -1063,7 +1079,7 @@
                     <div class="gallery-wrapper">
                         <div class="gallery-slide">
                             <div class="gallery-image">
-                                <img src="https://i.ibb.co/jWvvdbD/gallery-photo.jpg" alt="웨딩 사진 1">
+                                <img src="./gallery_images/gallery1.JPG" alt="웨딩 사진 1">
                             </div>
                             <div class="gallery-caption">우리의 첫 만남</div>
                         </div>
@@ -1246,37 +1262,52 @@
         </div>
     </div>
     
-    <!-- 오디오 요소들 -->
-    <audio id="track-1" preload="auto">
-        <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9f33148c5b.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="track-2" preload="auto">
-        <source src="https://cdn.pixabay.com/download/audio/2022/02/07/audio_9886d7c968.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="track-3" preload="auto">
-        <source src="https://cdn.pixabay.com/download/audio/2022/01/20/audio_977b432c67.mp3" type="audio/mpeg">
-    </audio>
-    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // ============= 오디오 초기화 =============
-            const tracks = [
-                {
-                    element: document.getElementById('track-1'),
-                    title: "Left or Right"
-                },
-                {
-                    element: document.getElementById('track-2'),
-                    title: "Photograph"
-                },
-                {
-                    element: document.getElementById('track-3'),
-                    title: "I.F.L.Y."
-                }
+            // ============= SoundCloud 플레이어 초기화 =============
+            const trackIds = [
+                "1462924993", // SoundCloud 트랙 ID로 "Left or Right"에 해당하는 트랙
+                "1488567266", // SoundCloud 트랙 ID로 "Photograph"에 해당하는 트랙
+                "1445522392"  // SoundCloud 트랙 ID로 "I.F.L.Y."에 해당하는 트랙
+            ];
+            
+            const trackTitles = [
+                "Left or Right",
+                "Photograph",
+                "I.F.L.Y."
             ];
             
             let currentTrackIndex = 0;
             let isPlaying = false;
+            let player = null;
+
+            // SoundCloud 위젯 로드
+            const scWidget = document.getElementById('soundcloud-player');
+            
+            // 초기 SoundCloud 프레임 로드
+            function loadSoundCloudTrack(index) {
+                const trackId = trackIds[index];
+                scWidget.src = `https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${trackId}&color=%23E56E7D&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false`;
+                
+                // SoundCloud API 위젯 연결
+                if (window.SC) {
+                    setTimeout(() => {
+                        player = SC.Widget(scWidget);
+                        
+                        // 이벤트 리스너 등록
+                        player.bind(SC.Widget.Events.READY, function() {
+                            updateTrackInfo();
+                            
+                            // SoundCloud 위젯 준비 완료 이벤트
+                            player.bind(SC.Widget.Events.FINISH, playNextTrack);
+                            player.bind(SC.Widget.Events.PLAY_PROGRESS, function(e) {
+                                const progress = e.currentPosition / e.loadedProgress;
+                                progressFill.style.width = `${progress * 100}%`;
+                            });
+                        });
+                    }, 500);
+                }
+            }
             
             // UI 요소
             const playPauseButton = document.getElementById('play-pause');
@@ -1288,27 +1319,13 @@
             const trackInfoElement = document.querySelector('.track-info');
             const progressFill = document.querySelector('.progress-fill');
             
-            // 현재 트랙 가져오기
-            function getCurrentTrack() {
-                return tracks[currentTrackIndex];
-            }
-            
             // 트랙 정보 업데이트
             function updateTrackInfo() {
-                trackTitleElement.textContent = getCurrentTrack().title;
+                trackTitleElement.textContent = trackTitles[currentTrackIndex];
                 trackInfoElement.classList.add('track-changed');
                 setTimeout(() => {
                     trackInfoElement.classList.remove('track-changed');
                 }, 500);
-            }
-            
-            // 모든 트랙 일시 정지
-            function pauseAllTracks() {
-                tracks.forEach(track => {
-                    if (track.element) {
-                        track.element.pause();
-                    }
-                });
             }
             
             // 재생/일시정지 버튼 업데이트
@@ -1324,36 +1341,14 @@
             
             // 재생/일시정지 토글
             function togglePlayPause() {
-                const currentTrack = getCurrentTrack().element;
+                if (!player) return;
                 
                 if (isPlaying) {
-                    currentTrack.pause();
+                    player.pause();
                     isPlaying = false;
                 } else {
-                    pauseAllTracks();
-                    
-                    // 사용자 인터랙션으로 오디오 재생 시도
-                    const playPromise = currentTrack.play();
-                    
-                    if (playPromise !== undefined) {
-                        playPromise.then(() => {
-                            isPlaying = true;
-                        }).catch(error => {
-                            console.error("재생 실패:", error);
-                            
-                            // 자동 재생 정책을 우회하기 위한 조치
-                            currentTrack.muted = true;
-                            currentTrack.play().then(() => {
-                                setTimeout(() => {
-                                    currentTrack.muted = false;
-                                }, 100);
-                                isPlaying = true;
-                            }).catch(err => {
-                                console.error("음소거 재생도 실패:", err);
-                                isPlaying = false;
-                            });
-                        });
-                    }
+                    player.play();
+                    isPlaying = true;
                 }
                 
                 updatePlayPauseButton();
@@ -1361,98 +1356,38 @@
             
             // 이전 트랙 재생
             function playPreviousTrack() {
-                pauseAllTracks();
+                if (!player) return;
                 
-                // 현재 재생 중인지 저장
-                const wasPlaying = isPlaying;
-                isPlaying = false;
-                
-                // 트랙 인덱스 변경
-                currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
+                currentTrackIndex = (currentTrackIndex - 1 + trackIds.length) % trackIds.length;
+                loadSoundCloudTrack(currentTrackIndex);
                 updateTrackInfo();
                 
-                // 이전에 재생 중이었다면 새 트랙 재생
-                if (wasPlaying) {
+                // 이전에 재생 중이었다면 재생 계속
+                if (isPlaying) {
                     setTimeout(() => {
-                        const currentTrack = getCurrentTrack().element;
-                        const playPromise = currentTrack.play();
-                        
-                        if (playPromise !== undefined) {
-                            playPromise.then(() => {
-                                isPlaying = true;
-                                updatePlayPauseButton();
-                            }).catch(error => {
-                                console.error("이전 트랙 재생 실패:", error);
-                                isPlaying = false;
-                                updatePlayPauseButton();
-                            });
-                        }
-                    }, 100);
-                } else {
-                    updatePlayPauseButton();
+                        player.play();
+                    }, 1000);
                 }
             }
             
             // 다음 트랙 재생
             function playNextTrack() {
-                pauseAllTracks();
+                if (!player) return;
                 
-                // 현재 재생 중인지 저장
-                const wasPlaying = isPlaying;
-                isPlaying = false;
-                
-                // 트랙 인덱스 변경
-                currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
+                currentTrackIndex = (currentTrackIndex + 1) % trackIds.length;
+                loadSoundCloudTrack(currentTrackIndex);
                 updateTrackInfo();
                 
-                // 이전에 재생 중이었다면 새 트랙 재생
-                if (wasPlaying) {
+                // 이전에 재생 중이었다면 재생 계속
+                if (isPlaying) {
                     setTimeout(() => {
-                        const currentTrack = getCurrentTrack().element;
-                        const playPromise = currentTrack.play();
-                        
-                        if (playPromise !== undefined) {
-                            playPromise.then(() => {
-                                isPlaying = true;
-                                updatePlayPauseButton();
-                            }).catch(error => {
-                                console.error("다음 트랙 재생 실패:", error);
-                                isPlaying = false;
-                                updatePlayPauseButton();
-                            });
-                        }
-                    }, 100);
-                } else {
-                    updatePlayPauseButton();
+                        player.play();
+                    }, 1000);
                 }
             }
             
-            // 트랙 종료 시 다음 트랙으로 이동
-            tracks.forEach(track => {
-                track.element.addEventListener('ended', function() {
-                    playNextTrack();
-                });
-            });
-            
-            // 재생 시간 업데이트 및 프로그레스 바 갱신 함수
-            function updateProgressForTrack(track) {
-                if (track === getCurrentTrack().element && isPlaying) {
-                    const currentTime = track.currentTime;
-                    const duration = track.duration || 1; // 0으로 나누기 방지
-                    const progressPercent = (currentTime / duration) * 100;
-                    progressFill.style.width = `${progressPercent}%`;
-                    
-                    // 재귀적으로 호출하여 지속적으로 업데이트
-                    requestAnimationFrame(() => updateProgressForTrack(track));
-                }
-            }
-            
-            // 모든 트랙에 timeupdate 이벤트 리스너 추가
-            tracks.forEach(track => {
-                track.element.addEventListener('play', function() {
-                    updateProgressForTrack(this);
-                });
-            });
+            // 첫 번째 트랙 로드
+            loadSoundCloudTrack(currentTrackIndex);
             
             // 이벤트 리스너 추가
             playPauseButton.addEventListener('click', togglePlayPause);
@@ -1474,9 +1409,6 @@
                 e.preventDefault();
                 playNextTrack();
             });
-            
-            // 초기 트랙 정보 표시
-            updateTrackInfo();
             
             // ============= 갤러리 슬라이더 =============
             const galleryWrapper = document.querySelector('.gallery-wrapper');
@@ -1816,18 +1748,6 @@
                     document.body.removeChild(textArea);
                 }
             }
-            
-            // 모바일 자동 재생을 위한 첫 상호작용 감지
-            document.body.addEventListener('touchstart', function initAudio() {
-                const firstTrack = tracks[0].element;
-                firstTrack.play().then(() => {
-                    firstTrack.pause();
-                    firstTrack.currentTime = 0;
-                }).catch(e => {});
-                
-                // 한 번만 실행하도록 리스너 제거
-                document.body.removeEventListener('touchstart', initAudio);
-            }, { once: true });
         });
     </script>
 </body>
