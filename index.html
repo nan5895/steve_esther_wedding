@@ -981,19 +981,19 @@
             <section class="invitation-section">
                 <h2 class="section-title">INVITATION</h2>
                 <p class="invitation-text">
-                    We have nurtured our love while facing each other,<br>
-                    and now, we wish to grow it into a greater love<br>
-                    as we walk forward together, looking in the same direction.<br><br>
-                    With the name of love,<br>
-                    we promise to cherish and protect our journey ahead.<br>
-                    We would be grateful for your blessings on our future.
+                    서로가 마주보며 다져온 사랑을<br>
+                    이제 함께 한 곳을 바라보며<br>
+                    걸어갈 수 있는 큰 사랑으로 키우고자 합니다.<br><br>
+                    저희 두 사람이 사랑의 이름으로<br>
+                    지켜나갈 수 있게 앞날을<br>
+                    축복해 주시면 감사하겠습니다.
                 </p>
             </section>
             
             <section class="contact-section">
                 <div class="contact-grid">
                     <div>
-                        <div class="contact-label">신랑 강승현</div>
+                        <div class="contact-label">강승현</div>
                         <div class="contact-icons">
                             <a href="tel:01012345678" class="contact-icon" aria-label="신랑에게 전화하기">
                                 <i class="fas fa-phone"></i>
@@ -1004,7 +1004,7 @@
                         </div>
                     </div>
                     <div>
-                        <div class="contact-label">신부 김주은</div>
+                        <div class="contact-label">김주은</div>
                         <div class="contact-icons">
                             <a href="tel:01087654321" class="contact-icon" aria-label="신부에게 전화하기">
                                 <i class="fas fa-phone"></i>
@@ -1148,7 +1148,7 @@
                         <div class="transport-title">
                             <i class="fas fa-car"></i> 자가용 안내
                         </div>
-                        <div class="transport-details">7,2호선 건대입구역 2번 출구와 7호선 건대입구역 3번 출구 앞 건물</div>
+                        <div class="transport-details">7,2호선 건대입구역 2번 출구와 7호선 건대입구역 3번 출구 앞 건물<</div>
                     </div>
                     <div class="transport-item">
                         <div class="transport-title">
@@ -1249,19 +1249,19 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // ============= HTML5 Audio Player =============
-            // 무료 로맨틱 음악 트랙 (로열티 프리 음악 URL)
+            // 무료 로맨틱 음악 트랙 (로열티 프리 음악 URL로 변경)
             const tracks = [
                 {
-                    url: "https://cdn.pixabay.com/download/audio/2022/01/18/audio_d03cb05884.mp3?filename=peaceful-piano-113997.mp3",
-                    title: "Peaceful Piano - 로맨틱 멜로디"
+                    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+                    title: "Wedding Theme - 로맨틱 멜로디"
                 },
                 {
-                    url: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3?filename=wedding-ceremony-music-for-bride-entrance-acoustic-guitar-instrumental-love-song-149197.mp3",
-                    title: "Wedding Ceremony - 어쿠스틱 기타"
+                    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+                    title: "Love Story - 어쿠스틱 기타"
                 },
                 {
-                    url: "https://cdn.pixabay.com/download/audio/2021/11/01/audio_cb1c2fe5d4.mp3?filename=peaceful-piano-128107.mp3",
-                    title: "Romantic Piano - 러브 테마"
+                    url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+                    title: "Forever Love - 피아노 멜로디"
                 }
             ];
             
@@ -1271,6 +1271,7 @@
             // 오디오 요소 생성
             const audioPlayer = document.getElementById('audio-player') || new Audio();
             audioPlayer.preload = "auto";
+            audioPlayer.volume = 0.7; // 볼륨 설정 (0.0 ~ 1.0)
             
             // 오디오 플레이어 UI 요소
             const playPauseButton = document.getElementById('play-pause');
@@ -1300,15 +1301,14 @@
                 // 트랙 로드
                 audioPlayer.load();
                 
-                // 사용자가 페이지와 상호작용한 경우에만 재생 시도
+                // 재생 중이었다면 새 트랙도 재생
                 if (isPlaying) {
                     const playPromise = audioPlayer.play();
                     
                     if (playPromise !== undefined) {
                         playPromise.catch(error => {
-                            // 자동재생 방지됨
-                            console.log("자동재생이 방지되었습니다. 먼저 문서와 상호작용해주세요.");
-                            isPlaying = false;
+                            console.log("자동재생이 방지되었습니다:", error);
+                            // 오류 발생 시 재생 상태는 그대로 유지하고 재생 버튼만 업데이트
                             updatePlayPauseButton();
                         });
                     }
@@ -1332,10 +1332,23 @@
                     audioPlayer.pause();
                     isPlaying = false;
                 } else {
-                    audioPlayer.play().catch(error => {
-                        console.log("브라우저에 의해 재생이 방지되었습니다. 사용자 상호작용이 필요합니다.");
-                    });
-                    isPlaying = true;
+                    const playPromise = audioPlayer.play();
+                    
+                    if (playPromise !== undefined) {
+                        playPromise
+                            .then(() => {
+                                isPlaying = true;
+                                updatePlayPauseButton();
+                            })
+                            .catch(error => {
+                                console.log("재생이 방지되었습니다:", error);
+                                alert("음악을 재생하려면 한 번 더 클릭해주세요.");
+                                isPlaying = false;
+                                updatePlayPauseButton();
+                            });
+                    } else {
+                        isPlaying = true;
+                    }
                 }
                 updatePlayPauseButton();
             }
@@ -1352,12 +1365,21 @@
             
             // 진행 바 업데이트
             audioPlayer.addEventListener('timeupdate', function() {
-                const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-                progressFill.style.width = `${progress}%`;
+                if (audioPlayer.duration) {
+                    const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+                    progressFill.style.width = `${progress}%`;
+                }
             });
             
             // 트랙 종료 시 다음 트랙 재생
             audioPlayer.addEventListener('ended', playNextTrack);
+            
+            // 오디오 에러 처리
+            audioPlayer.addEventListener('error', function(e) {
+                console.error('오디오 재생 오류:', e);
+                alert('음악 재생 중 오류가 발생했습니다. 다시 시도해주세요.');
+                loadTrack((currentTrackIndex + 1) % tracks.length); // 다음 트랙으로 넘어감
+            });
             
             // 이벤트 리스너
             playPauseButton.addEventListener('click', togglePlayPause);
@@ -1385,6 +1407,65 @@
             
             // 첫 번째 트랙 제목 표시
             trackTitleElement.textContent = tracks[currentTrackIndex].title;
+            
+            // 페이지 로드 시 자동 재생 시도
+            window.addEventListener('load', function() {
+                // 먼저 재생 상태로 설정
+                isPlaying = true;
+                updatePlayPauseButton();
+                
+                // 자동 재생 시도
+                const autoPlayPromise = audioPlayer.play();
+                
+                if (autoPlayPromise !== undefined) {
+                    autoPlayPromise.catch(error => {
+                        console.log("자동 재생이 차단되었습니다:", error);
+                        isPlaying = false;
+                        updatePlayPauseButton();
+                        
+                        // 화면에 한 번 탭하라는 알림 표시
+                        const playNotice = document.createElement('div');
+                        playNotice.style.position = 'fixed';
+                        playNotice.style.top = '50%';
+                        playNotice.style.left = '50%';
+                        playNotice.style.transform = 'translate(-50%, -50%)';
+                        playNotice.style.background = 'rgba(0,0,0,0.7)';
+                        playNotice.style.color = 'white';
+                        playNotice.style.padding = '15px 20px';
+                        playNotice.style.borderRadius = '10px';
+                        playNotice.style.zIndex = '9999';
+                        playNotice.style.textAlign = 'center';
+                        playNotice.innerHTML = '음악을 재생하려면<br>화면을 탭하세요';
+                        
+                        document.body.appendChild(playNotice);
+                        
+                        // 문서 어디든 클릭하면 음악 재생 시도 및 알림 제거
+                        const clickHandler = function() {
+                            audioPlayer.play()
+                                .then(() => {
+                                    isPlaying = true;
+                                    updatePlayPauseButton();
+                                    document.body.removeChild(playNotice);
+                                    document.removeEventListener('click', clickHandler);
+                                    document.removeEventListener('touchend', clickHandler);
+                                })
+                                .catch(() => {
+                                    // 여전히 재생할 수 없으면 알림 유지
+                                });
+                        };
+                        
+                        document.addEventListener('click', clickHandler);
+                        document.addEventListener('touchend', clickHandler);
+                        
+                        // 5초 후에 알림 자동 제거
+                        setTimeout(() => {
+                            if (document.body.contains(playNotice)) {
+                                document.body.removeChild(playNotice);
+                            }
+                        }, 5000);
+                    });
+                }
+            });
             
             // ============= 갤러리 슬라이더 =============
             const galleryWrapper = document.querySelector('.gallery-wrapper');
