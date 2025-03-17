@@ -930,11 +930,11 @@
                 </div>
                 <div class="couple-info">
                     <div class="couple-names">
-                        <span>강승현</span>
+                        <span>신랑 강승현</span>
                         <i class="fas fa-heart heart-icon"></i>
-                        <span>김주은</span>
+                        <span>신부 김주은</span>
                     </div>
-                    <div class="wedding-date">2025.12.13 SAT PM 01:00</div>
+                    <div class="wedding-date">2025.12.13 SAT AM 11:00</div>
                 </div>
                 <div class="progress-bar">
                     <div class="progress-fill"></div>
@@ -1123,7 +1123,7 @@
                 <h2 class="section-title">LOCATION</h2>
                 <div class="location-info">
                     <div class="location-name">건대 스타씨티아트홀</div>
-                    <div class="location-address">서울시 광진구 능동로 110</div>
+                    <div class="location-address">서울 광진구 화양동 4-20 스타시티영존 5층</div>
                     <div class="location-phone">02-1234-5678</div>
                 </div>
                 <div class="map-container">
@@ -1143,7 +1143,7 @@
                         <div class="transport-title">
                             <i class="fas fa-bus"></i> 버스안내
                         </div>
-                        <div class="transport-details">지선 7017, 7018 / 간선 5025, 5028 신자동고개 정류장 하차</div>
+                        <div class="transport-details">지선 2016번, 2222번, 3217번, 3220번, 4212번 / 간선 240번, 721번, N61번, N62번 건대입구역, 건대입구역 사거리 하차</div>
                     </div>
                     <div class="transport-item">
                         <div class="transport-title">
@@ -1155,19 +1155,19 @@
                         <div class="transport-title">
                             <i class="fas fa-subway"></i> 지하철 안내
                         </div>
-                        <div class="transport-details">7호선 학동역 8번 출구에서 올치병원 방향으로 100m</div>
+                        <div class="transport-details">72호선 건대입구역 2번 출구와 7호선 건대입구역 3번 출구 앞 건물</div>
                     </div>
                     <div class="transport-item">
                         <div class="transport-title">
                             <i class="fas fa-parking"></i> 주차 안내
                         </div>
-                        <div class="transport-details">지하 3층 주차장 이용 (300대)</div>
+                        <div class="transport-details">병원 주차장 이용 (300대)</div>
                     </div>
                     <div class="transport-item">
                         <div class="transport-title">
                             <i class="fas fa-utensils"></i> 피로연 안내
                         </div>
-                        <div class="transport-details">지상 2층 별채 (300석)</div>
+                        <div class="transport-details">홀 분리 식당 (250석)</div>
                     </div>
                 </div>
             </section>
@@ -1210,22 +1210,7 @@
                     </button>
                 </div>
                 <div class="guestbook-entries" id="guestbook-entries">
-                    <div class="guestbook-entry">
-                        <div class="entry-header">
-                            <span class="entry-name">최수진</span>
-                            <span class="entry-date">2021-05-29 10:53</span>
-                        </div>
-                        <p class="entry-message">결혼 축하해~ 행복하게 잘 살아 ^^</p>
-                        <span class="entry-delete"><i class="fas fa-times"></i></span>
-                    </div>
-                    <div class="guestbook-entry">
-                        <div class="entry-header">
-                            <span class="entry-name">김동호</span>
-                            <span class="entry-date">2021-05-29 09:46</span>
-                        </div>
-                        <p class="entry-message">드디어 결혼하는구나! 축하한다 친구야~~</p>
-                        <span class="entry-delete"><i class="fas fa-times"></i></span>
-                    </div>
+                    <!-- 방명록 항목들이 여기에 동적으로 추가됩니다 -->
                 </div>
             </section>
         </div>
@@ -1265,29 +1250,32 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // ============= SoundCloud 플레이어 초기화 =============
+            // 무료 로맨틱 음악 트랙 ID로 변경
             const trackIds = [
-                "1462924993", // SoundCloud 트랙 ID로 "Left or Right"에 해당하는 트랙
-                "1488567266", // SoundCloud 트랙 ID로 "Photograph"에 해당하는 트랙
-                "1445522392"  // SoundCloud 트랙 ID로 "I.F.L.Y."에 해당하는 트랙
+                "985846064", // "Eternal Love" - 로맨틱 피아노 음악
+                "349602572", // "Wedding Day" - 스윗 멜로디
+                "1230075487"  // "Forever Together" - 로맨틱 기타 음악
             ];
             
             const trackTitles = [
-                "Left or Right",
-                "Photograph",
-                "I.F.L.Y."
+                "Eternal Love - 로맨틱 피아노",
+                "Wedding Day - 스윗 멜로디",
+                "Forever Together - 기타 음악"
             ];
             
             let currentTrackIndex = 0;
-            let isPlaying = false;
+            let isPlaying = false; // 초기값은 false, 곧 자동재생으로 true로 변경
             let player = null;
 
             // SoundCloud 위젯 로드
             const scWidget = document.getElementById('soundcloud-player');
+            const playIcon = document.getElementById('play-icon');
+            const pauseIcon = document.getElementById('pause-icon');
             
-            // 초기 SoundCloud 프레임 로드
+            // 초기 SoundCloud 프레임 로드 (자동재생 true로 설정)
             function loadSoundCloudTrack(index) {
                 const trackId = trackIds[index];
-                scWidget.src = `https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${trackId}&color=%23E56E7D&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false`;
+                scWidget.src = `https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/${trackId}&color=%23E56E7D&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false`;
                 
                 // SoundCloud API 위젯 연결
                 if (window.SC) {
@@ -1296,6 +1284,10 @@
                         
                         // 이벤트 리스너 등록
                         player.bind(SC.Widget.Events.READY, function() {
+                            // 위젯이 준비되면 자동으로 재생
+                            player.play();
+                            isPlaying = true;
+                            updatePlayPauseButton();
                             updateTrackInfo();
                             
                             // SoundCloud 위젯 준비 완료 이벤트
@@ -1304,6 +1296,17 @@
                                 const progress = e.currentPosition / e.loadedProgress;
                                 progressFill.style.width = `${progress * 100}%`;
                             });
+                            
+                            // 재생 상태 확인
+                            player.bind(SC.Widget.Events.PLAY, function() {
+                                isPlaying = true;
+                                updatePlayPauseButton();
+                            });
+                            
+                            player.bind(SC.Widget.Events.PAUSE, function() {
+                                isPlaying = false;
+                                updatePlayPauseButton();
+                            });
                         });
                     }, 500);
                 }
@@ -1311,8 +1314,6 @@
             
             // UI 요소
             const playPauseButton = document.getElementById('play-pause');
-            const playIcon = document.getElementById('play-icon');
-            const pauseIcon = document.getElementById('pause-icon');
             const prevButton = document.getElementById('prev-track');
             const nextButton = document.getElementById('next-track');
             const trackTitleElement = document.getElementById('track-title');
@@ -1361,13 +1362,6 @@
                 currentTrackIndex = (currentTrackIndex - 1 + trackIds.length) % trackIds.length;
                 loadSoundCloudTrack(currentTrackIndex);
                 updateTrackInfo();
-                
-                // 이전에 재생 중이었다면 재생 계속
-                if (isPlaying) {
-                    setTimeout(() => {
-                        player.play();
-                    }, 1000);
-                }
             }
             
             // 다음 트랙 재생
@@ -1377,16 +1371,9 @@
                 currentTrackIndex = (currentTrackIndex + 1) % trackIds.length;
                 loadSoundCloudTrack(currentTrackIndex);
                 updateTrackInfo();
-                
-                // 이전에 재생 중이었다면 재생 계속
-                if (isPlaying) {
-                    setTimeout(() => {
-                        player.play();
-                    }, 1000);
-                }
             }
             
-            // 첫 번째 트랙 로드
+            // 첫 번째 트랙 로드 (자동 재생)
             loadSoundCloudTrack(currentTrackIndex);
             
             // 이벤트 리스너 추가
@@ -1613,19 +1600,50 @@
                 document.body.removeChild(textArea);
             }
             
-            // ============= 방명록 기능 =============
+            // ============= 방명록 기능 (localStorage 사용) =============
             const submitButton = document.getElementById('submit-message');
             const nameInput = document.getElementById('guest-name');
             const passwordInput = document.getElementById('guest-password');
             const messageInput = document.getElementById('guest-message');
             const entriesContainer = document.getElementById('guestbook-entries');
             
-            submitButton.addEventListener('click', addGuestbookEntry);
-            submitButton.addEventListener('touchend', function(e) {
-                e.preventDefault();
-                addGuestbookEntry();
-            });
+            // 로컬 스토리지에서 방명록 가져오기
+            function loadGuestbookEntries() {
+                const entries = JSON.parse(localStorage.getItem('weddingGuestbook')) || [];
+                
+                // 방명록 엔트리 초기화
+                entriesContainer.innerHTML = '';
+                
+                // 최신 항목이 상단에 표시되도록 역순 정렬
+                entries.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                // 각 항목 표시
+                entries.forEach(entry => {
+                    const entryHtml = `
+                        <div class="guestbook-entry" data-id="${entry.id}">
+                            <div class="entry-header">
+                                <span class="entry-name">${entry.name}</span>
+                                <span class="entry-date">${entry.date}</span>
+                            </div>
+                            <p class="entry-message">${entry.message}</p>
+                            <span class="entry-delete"><i class="fas fa-times"></i></span>
+                        </div>
+                    `;
+                    
+                    entriesContainer.insertAdjacentHTML('beforeend', entryHtml);
+                });
+                
+                // 삭제 버튼에 이벤트 리스너 추가
+                document.querySelectorAll('.entry-delete').forEach(btn => {
+                    btn.addEventListener('click', deleteEntry);
+                    btn.addEventListener('touchend', function(e) {
+                        e.preventDefault();
+                        deleteEntry(e);
+                    });
+                });
+            }
             
+            // 방명록 추가
             function addGuestbookEntry() {
                 const name = nameInput.value.trim();
                 const password = passwordInput.value.trim();
@@ -1640,59 +1658,81 @@
                 const now = new Date();
                 const dateString = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
                 
-                // 새 방명록 항목 HTML
-                const entryHtml = `
-                    <div class="guestbook-entry animate-fade">
-                        <div class="entry-header">
-                            <span class="entry-name">${name}</span>
-                            <span class="entry-date">${dateString}</span>
-                        </div>
-                        <p class="entry-message">${message}</p>
-                        <span class="entry-delete"><i class="fas fa-times"></i></span>
-                    </div>
-                `;
+                // 기존 방명록 불러오기
+                const entries = JSON.parse(localStorage.getItem('weddingGuestbook')) || [];
                 
-                // 방명록 목록에 추가
-                entriesContainer.insertAdjacentHTML('afterbegin', entryHtml);
+                // 새 방명록 항목 추가
+                const newEntry = {
+                    id: Date.now().toString(), // 고유 ID
+                    name: name,
+                    password: password, // 실제 구현에서는 비밀번호 암호화 권장
+                    message: message,
+                    date: dateString
+                };
+                
+                entries.push(newEntry);
+                
+                // 로컬 스토리지에 저장
+                localStorage.setItem('weddingGuestbook', JSON.stringify(entries));
+                
+                // 화면 새로고침
+                loadGuestbookEntries();
                 
                 // 입력 폼 초기화
                 nameInput.value = '';
                 passwordInput.value = '';
                 messageInput.value = '';
-                
-                // 삭제 버튼 이벤트 추가 (새로 추가된 항목)
-                const newDeleteButton = entriesContainer.querySelector('.guestbook-entry:first-child .entry-delete');
-                newDeleteButton.addEventListener('click', deleteEntry);
-                newDeleteButton.addEventListener('touchend', function(e) {
-                    e.preventDefault();
-                    deleteEntry(e);
-                });
             }
             
-            // 방명록 삭제 기능
+            // 방명록 삭제
             function deleteEntry(event) {
                 const entry = event.target.closest('.guestbook-entry');
+                const entryId = entry.dataset.id;
                 
-                // 비밀번호 확인 (간단한 구현)
+                // 비밀번호 확인
                 const password = prompt('방명록을 삭제하려면 비밀번호를 입력하세요.');
-                if (password) {
-                    // 실제로는 서버에서 비밀번호 확인 후 삭제해야 함
-                    // 여기서는 간단히 비밀번호 입력하면 삭제되는 것으로 구현
-                    entry.style.opacity = '0';
-                    setTimeout(() => {
-                        entry.remove();
-                    }, 300);
+                if (!password) return;
+                
+                // 기존 방명록 불러오기
+                const entries = JSON.parse(localStorage.getItem('weddingGuestbook')) || [];
+                
+                // 해당 항목 찾기
+                const entryIndex = entries.findIndex(item => item.id === entryId);
+                
+                if (entryIndex === -1) {
+                    alert('해당 방명록을 찾을 수 없습니다.');
+                    return;
                 }
+                
+                // 비밀번호 확인
+                if (entries[entryIndex].password !== password) {
+                    alert('비밀번호가 일치하지 않습니다.');
+                    return;
+                }
+                
+                // 항목 삭제
+                entries.splice(entryIndex, 1);
+                
+                // 로컬 스토리지에 저장
+                localStorage.setItem('weddingGuestbook', JSON.stringify(entries));
+                
+                // 애니메이션 효과와 함께 삭제
+                entry.style.opacity = '0';
+                setTimeout(() => {
+                    // 화면 새로고침
+                    loadGuestbookEntries();
+                }, 300);
             }
             
-            // 기존 삭제 버튼에 이벤트 연결
-            document.querySelectorAll('.entry-delete').forEach(btn => {
-                btn.addEventListener('click', deleteEntry);
-                btn.addEventListener('touchend', function(e) {
-                    e.preventDefault();
-                    deleteEntry(e);
-                });
+            // 방명록 제출 버튼 이벤트
+            submitButton.addEventListener('click', addGuestbookEntry);
+            submitButton.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                addGuestbookEntry();
             });
+            
+            // 페이지 로드 시 방명록 불러오기
+            loadGuestbookEntries();
             
             // ============= 참석 의사 전달 버튼 =============
             const rsvpButton = document.querySelector('.rsvp-button');
