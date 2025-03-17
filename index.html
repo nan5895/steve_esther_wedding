@@ -907,6 +907,17 @@
         .animate-fade {
             animation: fadeIn 1s;
         }
+        
+        /* YouTube 플레이어 컨테이너 */
+        .youtube-container {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+            width: 10px;
+            height: 10px;
+            opacity: 0;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -915,7 +926,7 @@
             <section class="header" id="home">
                 <h1 class="header-title">Love player</h1>
                 <div class="main-image">
-                    <img src="https://source.unsplash.com/random/600x600/?wedding,couple" alt="강승현 & 김주은">
+                    <img src="https://www.dropbox.com/scl/fi/mphy2937778qws9dyy9n9/IMG_1875.JPG?rlkey=b4lv7m178mlw3bl3tjgwxwbem&dl=1" alt="강승현 & 김주은">
                 </div>
                 <div class="couple-info">
                     <div class="couple-names">
@@ -961,6 +972,9 @@
                         <span id="track-title">트랙을 선택해 주세요</span>
                     </div>
                 </div>
+                
+                <!-- YouTube 플레이어 컨테이너 (숨김) -->
+                <div class="youtube-container" id="youtube-container"></div>
             </section>
             
             <section class="invitation-section">
@@ -1063,7 +1077,7 @@
                     <div class="gallery-wrapper">
                         <div class="gallery-slide">
                             <div class="gallery-image">
-                                <img src="https://source.unsplash.com/random/600x400/?wedding,bride" alt="웨딩 사진 1">
+                                <img src="https://www.dropbox.com/scl/fi/fcogl5j417qyq5ql5hgn8/IMG_1163.JPG?rlkey=f1r7oswvzpab710e8oc3dapxp&dl=1" alt="웨딩 사진 1">
                             </div>
                             <div class="gallery-caption">우리의 첫 만남</div>
                         </div>
@@ -1246,185 +1260,252 @@
         </div>
     </div>
     
+    <!-- YouTube API 스크립트 -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+    
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // ============= 오디오 초기화 =============
-            const trackURLs = [
-                "https://cdn.pixabay.com/download/audio/2022/03/15/audio_9f33148c5b.mp3?filename=everlasting-love-pianocast-178613.mp3",
-                "https://cdn.pixabay.com/download/audio/2022/02/07/audio_9886d7c968.mp3?filename=acoustic-motivation-11290.mp3", 
-                "https://cdn.pixabay.com/download/audio/2022/01/20/audio_977b432c67.mp3?filename=a-gentle-breeze-relaxing-piano-music-116215.mp3"
-            ];
+        // YouTube API 변수
+        let youtubeAPIReady = false;
+        let players = [];
+        let currentPlayerIndex = 0;
+        let isPlaying = false;
+        
+        // YouTube 비디오 ID
+        const videoIds = [
+            'a7GITgqwDVg', // Left or Right
+            'L4KAQVcDbvo', // Photograph
+            '4ZtdiuSGNrY'  // I.F.L.Y.
+        ];
+        
+        // 트랙 제목
+        const trackTitles = [
+            "Left or Right",
+            "Photograph",
+            "I.F.L.Y."
+        ];
+        
+        // YouTube API 준비 완료 콜백
+        function onYouTubeIframeAPIReady() {
+            youtubeAPIReady = true;
+            initializePlayers();
+        }
+        
+        // YouTube 플레이어 초기화
+        function initializePlayers() {
+            const container = document.getElementById('youtube-container');
             
-            const trackTitles = [
-                "Everlasting Love - PianoCast",
-                "Acoustic Motivation", 
-                "A Gentle Breeze - Relaxing Piano"
-            ];
-            
-            // 오디오 요소들 미리로드
-            const audioElements = trackURLs.map(url => {
-                const audio = new Audio();
-                audio.src = url;
-                audio.load(); // 미리 로드
-                return audio;
+            // 모든 비디오에 대해 각각 플레이어 생성
+            videoIds.forEach((videoId, index) => {
+                // 각 플레이어의 컨테이너 생성
+                const playerDiv = document.createElement('div');
+                playerDiv.id = `player-${index}`;
+                container.appendChild(playerDiv);
+                
+                // 플레이어 생성
+                const player = new YT.Player(`player-${index}`, {
+                    height: '0',
+                    width: '0',
+                    videoId: videoId,
+                    playerVars: {
+                        'playsinline': 1,
+                        'controls': 0,
+                        'showinfo': 0,
+                        'rel': 0,
+                        'iv_load_policy': 3,
+                        'fs': 0
+                    },
+                    events: {
+                        'onReady': onPlayerReady,
+                        'onStateChange': onPlayerStateChange
+                    }
+                });
+                
+                players.push(player);
             });
             
-            let currentTrackIndex = 0;
-            let isPlaying = false;
-            let currentAudio = audioElements[currentTrackIndex];
-            
-            // UI 요소
-            const playPauseButton = document.getElementById('play-pause');
-            const playIcon = document.getElementById('play-icon');
-            const pauseIcon = document.getElementById('pause-icon');
-            const prevButton = document.getElementById('prev-track');
-            const nextButton = document.getElementById('next-track');
-            const trackTitleElement = document.getElementById('track-title');
-            const trackInfoElement = document.querySelector('.track-info');
-            const progressFill = document.querySelector('.progress-fill');
-            
-            // 트랙 정보 업데이트
-            function updateTrackInfo() {
-                trackTitleElement.textContent = trackTitles[currentTrackIndex];
-                trackInfoElement.classList.add('track-changed');
-                setTimeout(() => {
-                    trackInfoElement.classList.remove('track-changed');
-                }, 500);
+            // 초기 트랙 정보 업데이트
+            updateTrackInfo();
+        }
+        
+        // 플레이어 준비 완료 이벤트
+        function onPlayerReady(event) {
+            // 볼륨 설정
+            event.target.setVolume(70);
+        }
+        
+        // 플레이어 상태 변경 이벤트
+        function onPlayerStateChange(event) {
+            // 비디오가 종료되면 다음 트랙으로 이동
+            if (event.data === YT.PlayerState.ENDED) {
+                playNextTrack();
             }
             
-            // 재생/일시정지 버튼 업데이트
-            function updatePlayPauseButton() {
-                if (isPlaying) {
-                    playIcon.style.display = 'none';
-                    pauseIcon.style.display = 'block';
-                } else {
-                    playIcon.style.display = 'block';
-                    pauseIcon.style.display = 'none';
+            // 재생 상태 업데이트
+            if (event.data === YT.PlayerState.PLAYING) {
+                updateProgressBar(event.target);
+            }
+        }
+        
+        // 현재 플레이어 가져오기
+        function getCurrentPlayer() {
+            if (players.length === 0) return null;
+            return players[currentPlayerIndex];
+        }
+        
+        // 모든 플레이어 일시정지
+        function pauseAllPlayers() {
+            players.forEach(player => {
+                if (player && typeof player.pauseVideo === 'function') {
+                    player.pauseVideo();
                 }
-            }
+            });
+        }
+        
+        // 트랙 재생/일시정지 토글
+        function togglePlayPause() {
+            const currentPlayer = getCurrentPlayer();
+            if (!currentPlayer) return;
             
-            // 모든 오디오 일시 정지
-            function pauseAllAudio() {
-                audioElements.forEach(audio => {
-                    audio.pause();
-                });
-            }
-            
-            // 오디오 재생
-            function playCurrentTrack() {
-                pauseAllAudio();
-                currentAudio = audioElements[currentTrackIndex];
-                
-                // MIME 타입을 정확히 지정하여 오디오 요소 생성
-                const tempAudio = new Audio();
-                tempAudio.type = 'audio/mpeg';
-                tempAudio.src = trackURLs[currentTrackIndex];
-                
-                // 기존 오디오 요소 업데이트
-                currentAudio = tempAudio;
-                audioElements[currentTrackIndex] = tempAudio;
-                
-                // 재생 시도
-                const playPromise = tempAudio.play();
-                
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        isPlaying = true;
-                        updatePlayPauseButton();
-                        
-                        // 다른 트랙으로 변경된 경우 재생 시간 이벤트 리스너 다시 설정
-                        setupAudioEventListeners(tempAudio);
-                    }).catch(error => {
-                        console.error("재생 실패:", error);
-                        
-                        // 사용자 인터랙션 필요한 경우 대비 - 음소거 재생 시도
-                        tempAudio.muted = true;
-                        tempAudio.play().then(() => {
-                            // 음소거 해제 및 재생
-                            tempAudio.muted = false;
-                            isPlaying = true;
-                            updatePlayPauseButton();
-                            setupAudioEventListeners(tempAudio);
-                        }).catch(err => {
-                            console.error("음소거 재생도 실패:", err);
-                            isPlaying = false;
-                            updatePlayPauseButton();
-                        });
-                    });
-                }
-            }
-            
-            // 오디오 이벤트 리스너 설정
-            function setupAudioEventListeners(audio) {
-                // 종료 시 다음 트랙으로 자동 이동
-                audio.onended = playNextTrack;
-                
-                // 재생 시간 업데이트 및 프로그레스 바 갱신
-                audio.ontimeupdate = function() {
-                    const currentTime = audio.currentTime;
-                    const duration = audio.duration || 1; // 0으로 나누기 방지
-                    const progressPercent = (currentTime / duration) * 100;
-                    progressFill.style.width = `${progressPercent}%`;
-                };
-            }
-            
-            // 재생/일시정지 토글
-            function togglePlayPause() {
+            try {
                 if (isPlaying) {
-                    currentAudio.pause();
+                    currentPlayer.pauseVideo();
                     isPlaying = false;
                 } else {
-                    playCurrentTrack();
+                    pauseAllPlayers();
+                    currentPlayer.playVideo();
+                    isPlaying = true;
                 }
                 updatePlayPauseButton();
+            } catch (error) {
+                console.error('플레이어 제어 오류:', error);
             }
+        }
+        
+        // 이전 트랙 재생
+        function playPreviousTrack() {
+            pauseAllPlayers();
+            currentPlayerIndex = (currentPlayerIndex - 1 + videoIds.length) % videoIds.length;
+            updateTrackInfo();
             
-            // 이전 트랙 재생
-            function playPreviousTrack() {
-                pauseAllAudio();
-                currentTrackIndex = (currentTrackIndex - 1 + trackURLs.length) % trackURLs.length;
-                updateTrackInfo();
-                if (isPlaying) {
-                    playCurrentTrack();
+            if (isPlaying) {
+                const currentPlayer = getCurrentPlayer();
+                if (currentPlayer) {
+                    currentPlayer.playVideo();
                 }
             }
+        }
+        
+        // 다음 트랙 재생
+        function playNextTrack() {
+            pauseAllPlayers();
+            currentPlayerIndex = (currentPlayerIndex + 1) % videoIds.length;
+            updateTrackInfo();
             
-            // 다음 트랙 재생
-            function playNextTrack() {
-                pauseAllAudio();
-                currentTrackIndex = (currentTrackIndex + 1) % trackURLs.length;
-                updateTrackInfo();
-                if (isPlaying) {
-                    playCurrentTrack();
+            if (isPlaying) {
+                const currentPlayer = getCurrentPlayer();
+                if (currentPlayer) {
+                    currentPlayer.playVideo();
                 }
             }
+        }
+        
+        // UI 요소
+        let playPauseButton;
+        let playIcon;
+        let pauseIcon;
+        let prevButton;
+        let nextButton;
+        let trackTitleElement;
+        let trackInfoElement;
+        let progressFill;
+        
+        // 재생/일시정지 버튼 업데이트
+        function updatePlayPauseButton() {
+            if (isPlaying) {
+                playIcon.style.display = 'none';
+                pauseIcon.style.display = 'block';
+            } else {
+                playIcon.style.display = 'block';
+                pauseIcon.style.display = 'none';
+            }
+        }
+        
+        // 트랙 정보 업데이트
+        function updateTrackInfo() {
+            trackTitleElement.textContent = trackTitles[currentPlayerIndex];
+            trackInfoElement.classList.add('track-changed');
+            setTimeout(() => {
+                trackInfoElement.classList.remove('track-changed');
+            }, 500);
+        }
+        
+        // 프로그레스 바 업데이트
+        function updateProgressBar(player) {
+            if (!player || !isPlaying) return;
             
-            // 이벤트 리스너 추가
-            playPauseButton.addEventListener('click', togglePlayPause);
-            prevButton.addEventListener('click', playPreviousTrack);
-            nextButton.addEventListener('click', playNextTrack);
+            const progressInterval = setInterval(() => {
+                // 플레이어가 준비되지 않았거나 재생 중이 아니면 중단
+                if (!player || typeof player.getCurrentTime !== 'function' || !isPlaying) {
+                    clearInterval(progressInterval);
+                    return;
+                }
+                
+                try {
+                    const currentTime = player.getCurrentTime();
+                    const duration = player.getDuration();
+                    
+                    if (currentTime && duration) {
+                        const progressPercent = (currentTime / duration) * 100;
+                        progressFill.style.width = `${progressPercent}%`;
+                    }
+                } catch (error) {
+                    console.error('프로그레스바 업데이트 오류:', error);
+                    clearInterval(progressInterval);
+                }
+            }, 1000);
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // UI 요소 정의
+            playPauseButton = document.getElementById('play-pause');
+            playIcon = document.getElementById('play-icon');
+            pauseIcon = document.getElementById('pause-icon');
+            prevButton = document.getElementById('prev-track');
+            nextButton = document.getElementById('next-track');
+            trackTitleElement = document.getElementById('track-title');
+            trackInfoElement = document.querySelector('.track-info');
+            progressFill = document.querySelector('.progress-fill');
             
-            // 모바일 환경을 위한 터치 이벤트 추가
+            // ============= 플레이어 컨트롤 이벤트 리스너 =============
+            
+            // 재생/일시정지 버튼
+            playPauseButton.addEventListener('click', function() {
+                togglePlayPause();
+            });
+            
             playPauseButton.addEventListener('touchend', function(e) {
                 e.preventDefault();
                 togglePlayPause();
             });
             
+            // 이전 트랙 버튼
+            prevButton.addEventListener('click', playPreviousTrack);
             prevButton.addEventListener('touchend', function(e) {
                 e.preventDefault();
                 playPreviousTrack();
             });
             
+            // 다음 트랙 버튼
+            nextButton.addEventListener('click', playNextTrack);
             nextButton.addEventListener('touchend', function(e) {
                 e.preventDefault();
                 playNextTrack();
             });
             
-            // 초기 트랙 정보 표시
-            updateTrackInfo();
-            
-            // 첫 번째 오디오에 이벤트 리스너 설정
-            setupAudioEventListeners(audioElements[currentTrackIndex]);
+            // YouTube API가 이미 로드되었을 경우 직접 초기화
+            if (window.YT && window.YT.Player && youtubeAPIReady) {
+                initializePlayers();
+            }
             
             // ============= 갤러리 슬라이더 =============
             const galleryWrapper = document.querySelector('.gallery-wrapper');
